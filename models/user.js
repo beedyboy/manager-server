@@ -31,6 +31,25 @@ router.post("/", validate('staffs'),  (req, res) => {
 });
  
 
+router.post("/update/login",  (req, res) => {   
+  try {
+    const { email, id: staff_id} = req.body; 
+ 
+      db('staffs').where('id', staff_id)
+      .update('can_login', 'Yes').then((data) => {
+        if(data) {
+            res.send({  status: 200,  message: 'Account created successfully' });
+        } else {
+       res.send({  status: 404,  message: 'Account not created' });
+    }
+      }).catch(err => {
+         console.log(err);  
+})  
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({message: "Something went wrong"})
+  }
+});
 router.post("/create/login", validate('logins'),  (req, res) => {   
   try {
     const { email, id: staff_id} = req.body; 
@@ -126,8 +145,23 @@ router.post("/verify", (req, res) => {
                status: 200, 
                msg: "Account activated successfully"
             });
-    })
-  
-   
+    }) 
 }); 
+router.delete("/:id", (req, res) => { 
+   try {
+    db('staffs').where('id', req.params.id).del().then( (result) => {
+        res.send({
+            status: 200,
+            message: 'Account deleted successgully'
+        })
+    } )
+   } catch(error) {
+    console.log(error);
+       res.send({
+        status: 400,
+        message: error
+       })
+       
+   }
+})
 module.exports = router;
