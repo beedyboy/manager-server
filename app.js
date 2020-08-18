@@ -9,17 +9,17 @@ const cors = require("cors");
 var routes = require('./models/index'); 
 // var sms = require('./plugins/sms');
 const app = express();
-// app.use(cors({
-//   'allowedHeaders': ["Origin"," X-Requested-With", "Content-Type", "Accept", 'Authorization', "X-Access-Token"],
-//   'exposedHeaders': ['sessionId'],
-//   'credentials': true,
-//   'origin': 'https://client-commerce.herokuapp.com',
-//   'methods': 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE', 
-//   'preflightContinue': false,
-//   "optionsSuccessStatus": 200
-// }));
+app.use(cors({
+  'allowedHeaders': ["Origin"," X-Requested-With", "Content-Type", "Accept", 'Authorization', "X-Access-Token"],
+  'exposedHeaders': ['sessionId'],
+  'credentials': true,
+  'origin': 'https://office-manager-client.herokuapp.com/',
+  'methods': 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE', 
+  'preflightContinue': false,
+  "optionsSuccessStatus": 200
+}));
   
-app.use(cors());
+// app.use(cors());
 
 app.use(express.static('views/'));
 app.use('/uploads/products', express.static('uploads/products'));
