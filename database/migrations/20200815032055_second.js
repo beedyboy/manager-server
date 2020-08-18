@@ -58,7 +58,7 @@ exports.up = function(knex) {
 // 		assetTable.foreign('cat_id').references('id').inTable('categories')
 // 		.onDelete('CASCADE') .onUpdate('CASCADE');
 // })
-
+};
 exports.down = function(knex) {
   
 };
