@@ -1,6 +1,8 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');  
+const { checkHeader, validateName } = require('../middleware/valid');  
+ 
 const router = express.Router();  
    
 //get branch details by id
@@ -27,8 +29,11 @@ router.get("/:id", (req, res) => {
 //check whether branches exist
 router.get("/:name/exist", (req, res) => {   
     const name = req.params.name ;
-    const result = helper.nameExist('branches', name);
-    res.send({exist: result}); 
+    helper.nameExist('branches', name).then( (result) => {
+      console.log({result})
+       res.send({exist: result}); 
+    })
+   
 });
 
 //get all branches
@@ -40,7 +45,7 @@ const result = db('branches').select().then( ( data ) => {
 
 
 //create a new branches
-router.post("/", (req, res, next) => {   
+router.post("/", checkHeader, validateName('branches'), (req, res, next) => {   
    try {
      const {name, address, email,  phone} = req.body; 
     const created_at = new Date().toLocaleString();  
@@ -65,7 +70,7 @@ router.post("/", (req, res, next) => {
  
 
 //check whether branches exist
-router.post("/update", (req, res) => {  
+router.post("/update", checkHeader, (req, res) => {  
   try { 
     const {id, name, address, email,  phone} = req.body ;
     const updated_at = new Date().toLocaleString();
@@ -95,14 +100,20 @@ router.post("/update", (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => { 
-   try {
+router.delete("/:id", checkHeader, (req, res) => { 
+   try { 
     db('branches').where('id', req.params.id).del().then( (result) => {
         res.send({
             status: 200,
-            message: 'Branch deleted successgully'
+            message: 'Branch deleted successfully'
         })
-    } )
+    }).catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        status: 500,
+        message: err
+      })
+    })
    } catch(error) {
     console.log(error);
        res.send({

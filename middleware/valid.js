@@ -1,6 +1,5 @@
 
-const db = require('../config/knex'); 
-
+const db = require('../config/knex');  
 
   function validate(tbl) {
   return async function (req,res, next) { 
@@ -12,6 +11,23 @@ const db = require('../config/knex');
               status: 400,
               success: false,
               msg: "Email already exist"
+          });
+        } else {
+           next();
+        }
+       
+  }
+}
+ function validateName(tbl) {
+  return async function (req,res, next) { 
+    let name = req.body.name; 
+    let user = await db(tbl).where('name', name);
+    console.log(user, user);
+        if (user.length > 0) {
+            res.json({
+              status: 400,
+              success: false,
+              msg: "Name already exist"
           });
         } else {
            next();
@@ -36,7 +52,7 @@ const db = require('../config/knex');
           res.json({
             status: 500,
             success: false,
-            msg: "Invalid token! Please login again"
+            message: "Invalid token! Please login again"
         });
         }
       }).catch(err => console.log('buyer', err))
@@ -69,4 +85,4 @@ async function verify(req,res, next) {
 
 }
 
-module.exports = { validate, checkHeader, verify}
+module.exports = { validate, validateName, checkHeader, verify}

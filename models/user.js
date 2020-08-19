@@ -5,7 +5,22 @@ const router = express.Router();
 const mailer = require("../plugins/mailer"); 
 const {validate, checkHeader } = require('../middleware/valid');  
  
+router.get("/:email/exist", (req, res) => { 
+   try {
+     const email = req.params.email;  
+     db('staffs').where({email}).select('email').then( ( data ) => {  
+     if(data.length > 0) {
+      res.send({exist: true});
+    } else {
+       res.send({exist: false});
+     } 
+    
+    }); 
+  } catch (err) {
+    console.log(err);
+  }
 
+});
 //register user 
 router.post("/", validate('staffs'),  (req, res) => {   
   try {
@@ -30,27 +45,8 @@ router.post("/", validate('staffs'),  (req, res) => {
   }
 });
  
-
-router.post("/update/login",  (req, res) => {   
-  try {
-    const { email, id: staff_id} = req.body; 
  
-      db('staffs').where('id', staff_id)
-      .update('can_login', 'Yes').then((data) => {
-        if(data) {
-            res.send({  status: 200,  message: 'Account created successfully' });
-        } else {
-       res.send({  status: 404,  message: 'Account not created' });
-    }
-      }).catch(err => {
-         console.log(err);  
-})  
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({message: "Something went wrong"})
-  }
-});
-router.post("/create/login", validate('logins'),  (req, res) => {   
+router.post("/create/login", checkHeader, validate('logins'),  (req, res) => {   
   try {
     const { email, id: staff_id} = req.body; 
   const password = helper.hash(req.body.password);  
@@ -77,15 +73,15 @@ router.post("/create/login", validate('logins'),  (req, res) => {
   }
 });
  
-  router.get("/", (req, res) => {  
-const result = db('staffs').select().then( ( data ) => {  
+ router.get("/", (req, res) => {  
+   const result = db('staffs').select().then( ( data ) => {  
      res.send( data ).status(200); 
      });
 });
 
   router.get("/profile", checkHeader, (req, res) => {
      const id = req.user.id;  
-     db('users as u').where('u.id', id) 
+     db('staffs as u').where('u.id', id) 
      .select().then( (data) => { 
        if(data) {
               res.send({
@@ -101,12 +97,12 @@ const result = db('staffs').select().then( ( data ) => {
   });
 
 //update user
-router.post("/update",checkHeader, (req, res) => {
+router.post("/update", checkHeader, (req, res) => {
   try {
      const id = req.user.id;  
-    const {firstname, lastname, phone_number, gender, nickname} = req.body ;
+    const {email, firstname, lastname, phone:phone_number, acl, branch_id} = req.body ;
     const updated_at = new Date().toLocaleString();
-  db('users').where('id', id).update( { firstname, lastname, phone_number, gender, nickname, updated_at })
+  db('staffs').where('id', id).update( { email, firstname, lastname, phone:phone_number, acl, branch_id, updated_at })
   .then( ( data ) => {  
     if(data) {
       res.send({
@@ -131,30 +127,17 @@ router.post("/update",checkHeader, (req, res) => {
   }
 });
 
- 
-router.post("/verify", (req, res) => { 
-    const {email} = req.body; 
-    db('company').where('email', email).update( 'status', 'Active').then( user => {
-        if (!user) {
-            res.json({
-               status: 204, 
-               msg: "Error activating account"
-            });
-           }  
-           res.json({
-               status: 200, 
-               msg: "Account activated successfully"
-            });
-    }) 
-}); 
-router.delete("/:id", (req, res) => { 
+  
+router.delete("/:id", checkHeader, (req, res) => { 
    try {
     db('staffs').where('id', req.params.id).del().then( (result) => {
         res.send({
             status: 200,
-            message: 'Account deleted successgully'
+            message: 'Account deleted successfully'
         })
-    } )
+    }).catch(err => {
+      console.log(err);
+    })
    } catch(error) {
     console.log(error);
        res.send({

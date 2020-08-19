@@ -9,23 +9,7 @@ const mailer = require("../plugins/mailer");
 
 const router = express.Router();
 
-//check if 
-router.get("/:email/exist", (req, res) => { 
-   try {
-	 const email = req.params.email;  
-	 db('staffs').where({email}).select('email').then( ( data ) => {  
-	 if(data.length > 0) {
-	  res.send({exist: true});
-	} else {
-	   res.send({exist: false});
-	 } 
-	
-	}); 
-  } catch (err) {
-	console.log(err);
-  }
-
-});
+ 
  
  
  
@@ -40,10 +24,11 @@ try {
 			  helper.setSignature( data.id, token).then(rep => {
 				user.token = token;
 			  if( rep === true ) {
-				db('staffs').where('id', data.id)
+				db('staffs').where('id', data.staff_id)
 				.select('staffs.firstname', 'staffs.lastname', 'staffs.acl')
-				.then(payload => { 
-					const staff =  payload[0]; 
+				.then( (staff) => { 
+					// const staff =  payload[0]; 
+					// console.log({staff})
 				 res.json({
 					status: 200, 
 					user,
@@ -60,6 +45,11 @@ try {
 		  msg: "wrong email or password"
 		});
 		}
+		} else {
+			 res.send({
+		  status: 400,
+		  msg: "wrong email or password"
+		});
 		}
 	})
 } catch (error) {

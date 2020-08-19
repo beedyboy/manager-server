@@ -1,8 +1,8 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');  
-const router = express.Router(); 
-// var upload = multer({dest: 'uploads/'});
+const { checkHeader, validateName } = require('../middleware/valid');  
+const router = express.Router();  
  
 //get categories details by id
 router.get("/:id", (req, res) => {
@@ -28,10 +28,11 @@ router.get("/:id", (req, res) => {
 //check whether categories exist
 router.get("/:name/exist", (req, res) => {   
     const name = req.params.name ;
-    const result = helper.nameExist('categories', name);
-    res.send({exist: result});
-
-             
+    helper.nameExist('categories', name).then( (result) => {
+      console.log({result})
+       res.send({exist: result}); 
+    })
+   
 });
 
 //get all modules
@@ -44,7 +45,7 @@ const result = db('categories').select().then( ( data ) => {
 
 
 //create a new categories
-router.post("/", (req, res, next) => {   
+router.post("/", checkHeader, validateName('categories'), (req, res, next) => {   
    try {
      const {name, description} = req.body; 
     const created_at = new Date().toLocaleString(); 
@@ -70,7 +71,7 @@ router.post("/", (req, res, next) => {
  
 
 //check whether categories exist
-router.post("/update", (req, res) => {  
+router.post("/update", checkHeader, (req, res) => {  
   try {
  
     const {id, name, description} = req.body ;
@@ -102,14 +103,20 @@ router.post("/update", (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => { 
+router.delete("/:id", checkHeader, (req, res) => { 
    try {
     db('categories').where('id', req.params.id).del().then( (result) => {
         res.send({
             status: 200,
-            message: 'Category deleted successgully'
+            message: 'Category deleted successfully'
         })
-    } )
+    }).catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        status: 500,
+        message: err
+      })
+    })
    } catch(error) {
     console.log(error);
        res.send({
