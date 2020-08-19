@@ -10,10 +10,10 @@
 
 # production
 /build
-/config/config.json
+#/config/config.json
 #knexfile.js 
 # misc
-.env
+#.env
 .DS_Store
 .env.local
 .env.development.local
