@@ -147,4 +147,25 @@ router.delete("/:id", checkHeader, (req, res) => {
        
    }
 })
+
+  
+router.delete("/:email/login", (req, res) => { 
+   try {
+    db('logins').where('email', req.params.email).del().then( (result) => {
+        res.send({
+            status: 200,
+            message: 'Login account deleted successfully'
+        })
+    }).catch(err => {
+      console.log(err);
+    })
+   } catch(error) {
+    console.log(error);
+       res.send({
+        status: 400,
+        message: error
+       })
+       
+   }
+})
 module.exports = router;
