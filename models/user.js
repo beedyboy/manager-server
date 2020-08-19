@@ -148,7 +148,13 @@ router.delete("/:id", checkHeader, (req, res) => {
    }
 })
 
-  
+   
+ router.get("/login", (req, res) => {  
+   const result = db('logins').select().then( ( data ) => {  
+     res.send( data ).status(200); 
+     });
+});
+
 router.delete("/:email/login", (req, res) => { 
    try {
     db('logins').where('email', req.params.email).del().then( (result) => {
