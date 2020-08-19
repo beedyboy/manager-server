@@ -1,3 +1,1 @@
-#Backend Seller/buyer Server
-
- 
+#Backend services for managing your organization's processes

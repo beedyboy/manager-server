@@ -1,7 +1,7 @@
 {
-  "name": "ecommerce",
+  "name": "manager-server",
   "version": "1.0.0",
-  "description": "\"# bcommerce\"",
+  "description": "\"# manager-server\"",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/beedyboy/bcommerce.git"
+    "url": "git+https://github.com/beedyboy/manager-server.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/beedyboy/bcommerce/issues"
+    "url": "https://github.com/beedyboy/manager-server/issues"
   },
-  "homepage": "https://github.com/beedyboy/bcommerce#readme",
+  "homepage": "https://github.com/beedyboy/manager-server#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -36,7 +36,6 @@
     "nodemailer-express-handlebars": "^4.0.0",
     "nodemon": "^2.0.4",
     "nvm": "0.0.4",
-    "pg": "^8.3.0",
-    "socket.io": "^2.3.0"
+    "pg": "^8.3.0"
   }
 }

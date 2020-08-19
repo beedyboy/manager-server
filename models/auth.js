@@ -1,16 +1,12 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');
-const {validate, checkHeader, sellerAuth} = require('../middleware/valid'); 
+const {validate} = require('../middleware/valid'); 
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken'); 
-const mailer = require("../plugins/mailer");
-// const router = require('express').Router;
+const mailer = require("../plugins/mailer"); 
 
-const router = express.Router();
-
- 
- 
+const router = express.Router(); 
  
  
 router.post("/auth", (req, res) => {
