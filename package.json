@@ -1,7 +1,7 @@
 {
-  "name": "manager-server",
+  "name": "managerServer",
   "version": "1.0.0",
-  "description": "\"# manager-server\"",
+  "description": "\"# managerServer\"",
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js",
