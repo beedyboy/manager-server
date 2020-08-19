@@ -11,14 +11,14 @@ var routes = require('./models/index');
 const app = express();
 app.use(cors({
   'allowedHeaders': ["Origin"," X-Requested-With", "Content-Type", "Accept", 'Authorization', "X-Access-Token"],
-  'exposedHeaders': ['sessionId'],
-  'credentials': true,
-  'origin': 'https://office-manager-client.herokuapp.com',
+  'exposedHeaders': ['sessionId'], 
+  'origin': '*',
   'methods': 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE', 
   'preflightContinue': false,
   "optionsSuccessStatus": 200
 }));
   
+  // 'origin': 'https://office-manager-client.herokuapp.com',
 // app.use(cors());
 
 app.use(express.static('views/'));

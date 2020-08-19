@@ -57,7 +57,7 @@ router.post("/create/login", checkHeader, validate('logins'),  (req, res) => {
           db('staffs').where('id', staff_id)
           .update('can_login', 'Yes').then((data) => {
             if(data) {
-                res.send({  status: 200,  message: 'Account created successfully' });
+                res.send({  status: 200,  message: 'Login account created successfully' });
             }
           })
          
