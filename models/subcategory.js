@@ -4,10 +4,10 @@ const helper = require('../lib/helper');
 const router = express.Router(); 
 // var upload = multer({dest: 'uploads/'});
  
-//get shops details by id
+//get subcategory details by id
 router.get("/:id", (req, res) => {
     const id = req.params.id;
-    const result = db('shops').where({id}).select().then( ( data ) => { 
+    const result = db('subcategory').where({id}).select().then( ( data ) => { 
      if(data) {
          res.send({
              status: 200,
@@ -25,42 +25,45 @@ router.get("/:id", (req, res) => {
        });
 });
 
-//check whether shops exist
-router.get("/:name/exist", (req, res) => {   
-    const name = req.params.name ;
-    const result = helper.nameExist('shops', name);
-    res.send({exist: result});
-
-             
+//check whether subcategory exist
+router.get("/:cat_id/:sub/exist", (req, res) => {   
+    const {cat_id, sub: name} = req.params ;
+  db('subcategory').where({ cat_id, name}).select().then( ( data ) => { 
+   if(data.length > 0) {  
+       res.send({exist: true});
+     } else {
+        res.send({exist: false});
+     }
+              
+    });
 });
 
 //get all modules
 router.get("/", (req, res) => {  
- db('shops').join('members', 'shops.mid', '=', 'members.id')
- .select('*', 'members.firstname as fn').then( ( data ) => {   
-
+ db('subcategory as s').join('categories as c', 's.cat_id', '=', 'c.id')
+  .select('*', 'c.name as catName').then( ( data ) => {  
      res.send( data ).status(200); 
      });
 });
 
 
-//create a new shops
+//create a new subcategory
 router.post("/", (req, res, next) => {   
    try {
-     const {name, description, mid} = req.body; 
+     const {name, description, cat_id} = req.body; 
     const created_at = new Date().toLocaleString(); 
 
-    db('shops').insert({  name, mid, description }).then( ( result ) => { 
+    db('subcategory').insert({  name, cat_id, description }).then( ( result ) => { 
         
         if(result) { 
             res.send( {
                 status: 200,
-                message: 'New shop created successfully'
+                message: 'Sub-category created successfully'
                 } );
         } else {
             res.send({
                 status: 204,
-                message: 'Shop was not created'
+                message: 'Data was not created'
             })
         }
     });
@@ -70,7 +73,7 @@ router.post("/", (req, res, next) => {
 });
  
 
-//check whether shops exist
+//check whether subcategory exist
 router.post("/update", (req, res) => {  
   try {
 if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
@@ -78,7 +81,7 @@ if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bea
 } 
     const {id, name, description} = req.body ;
     const updated_at = new Date().toLocaleString();
-  db('shops').where('id', id).update( { name, description,  updated_at })
+  db('subcategory').where('id', id).update( { name, description,  updated_at })
   .then( ( data ) => {  
     if(data) {
       res.send({
@@ -107,7 +110,7 @@ if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bea
 
 router.delete("/:id", (req, res) => { 
    try {
-    db('shops').where('id', req.params.id).del().then( (result) => {
+    db('subcategory').where('id', req.params.id).del().then( (result) => {
         res.send({
             status: 200,
             message: 'Category deleted successgully'

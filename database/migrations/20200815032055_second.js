@@ -11,7 +11,7 @@ exports.up = function(knex) {
 		productTable.string( 'product_name', 30 ).nullable();   
 		productTable.text( 'description' ).nullable();     
 		productTable.text( 'images' ).nullable();   
-		productTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
+		productTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Active');    
 		productTable.string('created_at',  50).nullable();
 		productTable.string('updated_at',  50).nullable();
 		productTable.foreign('cat_id').references('id').inTable('categories')
@@ -23,8 +23,7 @@ exports.up = function(knex) {
 		stockTable.increments();   
 		stockTable.integer('product_id').unsigned().nullable();  
 		stockTable.string( 'stock_name', 30 ).nullable();     
-		stockTable.string( 'quantity', 30 ).nullable();     
-		stockTable.string( 'weight', 30 ).nullable();        
+		stockTable.string( 'quantity', 30 ).nullable();       
 		stockTable.string( 'price', 30 ).nullable();     
 		stockTable.string( 'expiry', 50 ).nullable();     
 		stockTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
@@ -39,7 +38,7 @@ exports.up = function(knex) {
 		subCatTable.integer('cat_id').unsigned().nullable();  
 		subCatTable.string( 'sub_name', 30 ).nullable();     
 		subCatTable.text( 'description' ).nullable();    
-		subCatTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
+		subCatTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Active');    
 		subCatTable.string('created_at',  50).nullable();
 		subCatTable.string('updated_at',  50).nullable(); 
 		subCatTable.foreign('cat_id').references('id').inTable('categories')
@@ -51,10 +50,11 @@ exports.up = function(knex) {
 		assetTable.integer('sub_id').unsigned().nullable();  
 		assetTable.string( 'title', 30 ).nullable();     
 		assetTable.string( 'purchased_price', 30 ).nullable();         
+		assetTable.string( 'serial', 30 ).nullable();         
 		assetTable.text( 'description' ).nullable();    
-		assetTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
-		assetTable.enu('condition', ['New', 'Used', 'Maintenance', 'Leased']).defaultTo('New');    
-		assetTable.string('date_acquired',  50).nullable();
+		assetTable.enu('status', ['Active', 'Pending', 'Deleted', 'Maintenance', 'Sold']).defaultTo('Active');    
+		assetTable.enu('condition', ['New', 'Used', 'Rented', 'Leased']).defaultTo('New');    
+		assetTable.string('purchased_date',  50).nullable();
 		assetTable.string('date_sold',  50).nullable();
 		assetTable.string('created_at',  50).nullable();
 		assetTable.string('updated_at',  50).nullable(); 
@@ -81,21 +81,19 @@ exports.up = function(knex) {
 		.onDelete('CASCADE') .onUpdate('CASCADE'); 
 		allocateTable.foreign('dept_id').references('id').inTable('departments')
 		.onDelete('CASCADE') .onUpdate('CASCADE'); 
-		allocateTable.foreign('branch_id').references('id').inTable('branches')
-		.onDelete('CASCADE') .onUpdate('CASCADE'); 
 })
 
-.createTable( 'maintenance', function( assetTable ) {  
-		assetTable.increments();   
-		assetTable.integer('asset_id').unsigned().nullable();  
-		assetTable.string( 'maintenance_date', 30 ).nullable();     
-		assetTable.string( 'cost', 30 ).nullable();         
-		assetTable.text( 'description' ).nullable();    
-		assetTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
-		assetTable.enu('condition', ['New', 'Used', 'Maintenance', 'Leased']).defaultTo('New');    
-		assetTable.string('created_at',  50).nullable();
-		assetTable.string('updated_at',  50).nullable(); 
-		assetTable.foreign('asset_id').references('id').inTable('assets')
+.createTable( 'maintenance', function( maintTable ) {  
+		maintTable.increments();   
+		maintTable.integer('asset_id').unsigned().nullable();  
+		maintTable.string( 'maintenance_date', 30 ).nullable();     
+		maintTable.string( 'cost', 30 ).nullable();         
+		maintTable.text( 'description' ).nullable();    
+		maintTable.string( 'maint_date', 30 ).nullable();         
+		maintTable.enu('status', ['Active', 'Completed', 'Deleted']).defaultTo('Active');     
+		maintTable.string('created_at',  50).nullable();
+		maintTable.string('updated_at',  50).nullable(); 
+		maintTable.foreign('asset_id').references('id').inTable('assets')
 		.onDelete('CASCADE') .onUpdate('CASCADE'); 
 })
 
