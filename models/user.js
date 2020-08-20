@@ -22,7 +22,7 @@ router.get("/:email/exist", (req, res) => {
 
 });
 //register user 
-router.post("/", checkHeader, validate('staffs'),  (req, res) => {   
+router.post("/", validate('staffs'),  (req, res) => {   
   try {
     const { email, firstname, lastname, phone:phone_number, acl, branch_id} = req.body;  
   const created_at = new Date().toLocaleString(); 
@@ -46,7 +46,7 @@ router.post("/", checkHeader, validate('staffs'),  (req, res) => {
 });
  
  
-router.post("/create/login", checkHeader, validate('logins'),  (req, res) => {   
+router.post("/create/login", validate('logins'),  (req, res) => {   
   try {
     const { email, id: staff_id} = req.body; 
   const password = helper.hash(req.body.password);  
