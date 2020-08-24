@@ -6,9 +6,12 @@ const fs = require('fs');
 const router = express.Router();
  
 //get stocks details by id
-router.get("/:id", (req, res) => {
-	const id = req.params.id;
-	const result = db('stocks').where({id}).select().then( ( data ) => { 
+router.get("/:invoice", (req, res) => {
+	const order_no = req.params.invoice;
+	 db('orders as o').where({order_no})
+	 .join('stocks as s', 'o.stock_id', '=', 's.id') 
+	 .join('products as p', 's.product_id', '=', 'p.id') 
+	.select('o.*', 's.stock_name', 'p.product_name').then( ( data ) => { 
 	  if(data) {
 		  res.send({
 			  status: 200,
@@ -25,47 +28,24 @@ router.get("/:id", (req, res) => {
 		});
 });
 
+ 
 
-//get all stocks in a product
-router.get("/product/:id", (req, res) => {  
-  const product_id = req.params.id;
-  db('stocks').where({product_id})
-  .select().then( ( data ) => {    
-	   res.status(200).json({
-		 status: 200,
-		 data
-	   })
-		});
-});
-
-// get product stock by name
-router.get("/product/:name/search", (req, res) => {  
-	const name = req.params.name; 
-	db('products as p').where('p.product_name', 'ilike', `%${name}%`)
-	.join('stocks as s',  's.product_id', '=', 'p.id')
-	.select('s.*', 'p.product_name', 'p.images').then( ( data ) => {    
-		 res.status(200).json({
-		   status: 200,
-		   data
-		 })
-		  });
-  });
 //create a new stocks
 router.post("/", (req, res) => {   
   try {
-	const { stock_name, quantity, expiry, price, product_id } = req.body; 
+	const { stock_id, order_no, quantity, discount, item_price, sold_price } = req.body; 
   const created_at = new Date().toLocaleString();  
-
-  db('stocks').insert({ stock_name, quantity, expiry, price, product_id, created_at }).then( ( result ) => {  
+  const order_date = new Date().getDate();
+  db('orders').insert({ stock_id, order_no, quantity, discount, item_price, sold_price, order_date, created_at }).then( ( result ) => {  
   if(result) { 
 	  res.send( {
 		  status: 200,
-		  message: 'Stock created successfully'
+		  message: 'Order created successfully'
 		  } );
   } else {
 	  res.send({
 		  status: 204,
-		  message: 'Stock was not created'
+		  message: 'Order was not created'
 	  })
   }
   });
@@ -80,20 +60,20 @@ router.post("/", (req, res) => {
 
 //check whether stocks exist
 router.post("/update", (req, res) => {  
-	const {id, stock_name, quantity, expiry, price, product_id} = req.body ;
+	const {id, order_no, quantity, discount, item_price, sold_price, order_date} = req.body ;
 	const updated_at = new Date().toLocaleString();
-  db('stocks').where('id', id).update( { stock_name, quantity, expiry, price, product_id,  updated_at })
+  db('orders').where('id', id).update( { order_no, quantity, discount, item_price, sold_price, order_date,  updated_at })
   .then( ( data ) => {  
 	if(data) {
 	  res.send({
 	  status: 200, 
-	  message: "Stock updated successfully" 
+	  message: "Order updated successfully" 
 	 });
 	}
 	  else {
 		res.send({
 		status: 400,
-		message: "Error updating stocks" 
+		message: "Error updating order" 
 	  });
 	  }
 	
@@ -105,10 +85,10 @@ router.post("/update", (req, res) => {
 
 router.delete("/:id", (req, res) => { 
   try {
-   db('stocks').where('id', req.params.id).del().then( (result) => {
+   db('orders').where('id', req.params.id).del().then( (result) => {
        res.send({
            status: 200,
-           message: 'Stock deleted successgully'
+           message: 'Order deleted successgully'
        })
    } )
   } catch(error) {
@@ -125,7 +105,7 @@ router.delete("/bulk/:arr", (req, res) => {
   try {
 	  var arr = req.params.arr;
 	  console.log({arr});
-   db('stocks').whereIn('id', arr).del().then( (result) => {
+   db('stocks').whereIn('order_no', arr).del().then( (result) => {
        res.send({
            status: 200,
            message: 'Stock deleted successgully'

@@ -6,7 +6,8 @@ const router = express.Router();
  
 //get subcategory details by id
 router.get("/:id", (req, res) => {
-    const id = req.params.id;
+    try {
+      const id = req.params.id;
     const result = db('subcategory').where({id}).select().then( ( data ) => { 
      if(data) {
          res.send({
@@ -23,12 +24,15 @@ router.get("/:id", (req, res) => {
        }
       
        });
+    } catch (error) {
+      console.log(error)
+    }
 });
 
 //check whether subcategory exist
 router.get("/:cat_id/:sub/exist", (req, res) => {   
-    const {cat_id, sub: name} = req.params ;
-  db('subcategory').where({ cat_id, name}).select().then( ( data ) => { 
+    const {cat_id, sub: sub_name} = req.params ;
+  db('subcategory').where({ cat_id, sub_name}).select().then( ( data ) => { 
    if(data.length > 0) {  
        res.send({exist: true});
      } else {
@@ -47,13 +51,22 @@ router.get("/", (req, res) => {
 });
 
 
+router.get("/category/:id", (req, res) => {  
+  const cat_id = req.params.id;
+  db('subcategory as s').where({cat_id})
+  .join('categories as c', 's.cat_id', '=', 'c.id')
+   .select('*', 'c.name as catName').then( ( data ) => {  
+      res.send( data ).status(200); 
+      });
+ });
+
 //create a new subcategory
 router.post("/", (req, res, next) => {   
    try {
-     const {name, description, cat_id} = req.body; 
+     const {name: sub_name, description, cat_id} = req.body; 
     const created_at = new Date().toLocaleString(); 
 
-    db('subcategory').insert({  name, cat_id, description }).then( ( result ) => { 
+    db('subcategory').insert({  sub_name, cat_id, description }).then( ( result ) => { 
         
         if(result) { 
             res.send( {
@@ -62,7 +75,7 @@ router.post("/", (req, res, next) => {
                 } );
         } else {
             res.send({
-                status: 204,
+                status: 400,
                 message: 'Data was not created'
             })
         }
@@ -75,13 +88,10 @@ router.post("/", (req, res, next) => {
 
 //check whether subcategory exist
 router.post("/update", (req, res) => {  
-  try {
-if(req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-  console.log('token', req.headers.authorization.split(' ')[1]);
-} 
-    const {id, name, description} = req.body ;
+  try { 
+    const {id, name: sub_name, description} = req.body ;
     const updated_at = new Date().toLocaleString();
-  db('subcategory').where('id', id).update( { name, description,  updated_at })
+  db('subcategory').where('id', id).update( { sub_name, description,  updated_at })
   .then( ( data ) => {  
     if(data) {
       res.send({

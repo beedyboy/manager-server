@@ -26,7 +26,7 @@ exports.up = function(knex) {
 		stockTable.string( 'quantity', 30 ).nullable();       
 		stockTable.string( 'price', 30 ).nullable();     
 		stockTable.string( 'expiry', 50 ).nullable();     
-		stockTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Pending');    
+		stockTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Active');    
 		stockTable.string('created_at',  50).nullable();
 		stockTable.string('updated_at',  50).nullable(); 
 		stockTable.foreign('product_id').references('id').inTable('products')
