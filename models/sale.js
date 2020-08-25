@@ -32,7 +32,10 @@ router.post("/", (req, res) => {
   try {
 	const { order_no,  total, customer_id, fullname, email, phone, respondent } = req.body; 
   const created_at = new Date().toLocaleString();  
-  const sales_date= new Date().getDate();
+  const today= new Date();
+  var mm = String(today.getMonth() + 1).padStart(2, '0')
+  var dd = String(today.getDate()).padStart(2, '0')
+    const sales_date = mm + '/' + dd + '/' + today.getFullYear(); 
   db('orders').insert({  order_no,  total, customer_id, fullname, email, phone, sales_date, respondent, created_at }).then( ( result ) => {  
   if(result) { 
 	  res.send( {

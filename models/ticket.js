@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../config/knex'); 
-const helper = require('../lib/helper'); 
-const fs = require('fs');
+const helper = require('../lib/helper');  
+const { checkHeader } = require('../middleware/valid');  
 
 const router = express.Router();
  
@@ -49,11 +49,15 @@ router.get("/:id", (req, res) => {
  
 
 //create a new ticket
-router.post("/", (req, res) => {   
+router.post("/", checkHeader, (req, res) => {   
   try {
-	const { name: title, description, email, staff_id, requester, category, priority } = req.body; 
-  const created_at = new Date().toLocaleString();  
-  const ticket_date= new Date().getDate();
+	const staff_id = req.user.id;  
+	const { name: title, description, email, requester, category, priority } = req.body; 
+  const created_at = new Date().toLocaleString();   
+  const today= new Date();
+  var mm = String(today.getMonth() + 1).padStart(2, '0')
+  var dd = String(today.getDate()).padStart(2, '0')
+  const ticket_date = mm + '/' + dd + '/' + today.getFullYear();
   db('tickets').insert({ title, description, email, staff_id, ticket_date, requester, category, priority, created_at }).then( ( result ) => {  
   if(result) { 
 	  res.send( {

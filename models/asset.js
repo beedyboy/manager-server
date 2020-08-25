@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     try {
-       const { sub_id, name:title, purchased_price, serial, description, condition, purchased_date } = req.body;
+       const { sub_id, name:title, purchased_price, serial, description, purchased_date } = req.body;
        const created_at = new Date().toLocaleString();  
         db('assets').returning('id')
-        .insert({sub_id, title, purchased_price, serial, description, condition, purchased_date, created_at})
+        .insert({sub_id, title, purchased_price, serial, description, purchased_date, created_at})
         .then( (data) => {
-            if(data.length > 0) {
+            if(data) {
                 res.json({
                     status: 200,
                     message: "New asset added successfully"
@@ -23,6 +23,41 @@ router.post('/', (req, res) => {
                 })
             }
         }).catch((err) => {
+            console.log({err})
+            res.status(500).json({
+                status: 500,
+                message: "Something went wrong with your request"
+            })
+        })
+    } catch (error) {
+        console.log('asset', error)
+        res.status(500).send({
+            status: 500,
+            message: 'Something went wrong with the server'
+        })
+    }
+});
+
+router.post('/update', (req, res) => {
+    try {
+       const { id, sub_id, name:title, purchased_price, serial, description, purchased_date } = req.body;
+       const updated_at = new Date().toLocaleString();  
+        db('assets').returning('id').where('id', id)
+        .update({sub_id, title, purchased_price, serial, description, purchased_date, updated_at})
+        .then( (data) => {
+            if(data) {
+                res.json({
+                    status: 200,
+                    message: "Asset updated successfully"
+                })
+            } else {
+                res.json({
+                    status: 400,
+                    message: "Asset was not updated"
+                })
+            }
+        }).catch((err) => {
+            console.log({err})
             res.status(500).json({
                 status: 500,
                 message: "Something went wrong with your request"
@@ -41,8 +76,7 @@ router.get('/', (req, res) => {
     try {
         db('assets as a')
     .join('subcategory as s', 'a.sub_id', '=', 's.id')
-    .select('a.*', 's.sub_name as subName').then((data) => {
-        console.log({data})
+    .select('a.*', 's.sub_name as subName', 's.cat_id').then((data) => { 
        if(data) {
         res.send({
             status: 200,

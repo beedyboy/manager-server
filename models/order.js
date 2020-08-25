@@ -34,8 +34,13 @@ router.get("/:invoice", (req, res) => {
 router.post("/", (req, res) => {   
   try {
 	const { stock_id, order_no, quantity, discount, item_price, sold_price } = req.body; 
-  const created_at = new Date().toLocaleString();  
-  const order_date = new Date().getDate();
+  const created_at = new Date().toLocaleString(); 
+  
+  const today= new Date();
+  var mm = String(today.getMonth() + 1).padStart(2, '0')
+  var dd = String(today.getDate()).padStart(2, '0')
+   const order_date =  mm + '/' + dd + '/' + today.getFullYear(); 
+ 
   db('orders').insert({ stock_id, order_no, quantity, discount, item_price, sold_price, order_date, created_at }).then( ( result ) => {  
   if(result) { 
 	  res.send( {

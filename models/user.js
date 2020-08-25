@@ -26,7 +26,6 @@ router.post("/", validate('staffs'),  (req, res) => {
   try {
     const { email, firstname, lastname, phone:phone_number, acl, branch_id} = req.body;  
   const created_at = new Date().toLocaleString(); 
-
   db('staffs')
   .returning('id')
   .insert({   email, firstname, lastname, phone_number, acl, branch_id, created_at }).then( ( result ) => { 
