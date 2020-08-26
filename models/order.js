@@ -29,11 +29,35 @@ router.get("/:invoice", (req, res) => {
 });
 
  
+//get stocks details by id
+router.get("/cart/:invoice", (req, res) => {
+  const order_no = req.params.invoice;
+  console.log({order_no});
+	 db('orders as o').where({order_no})
+	 .join('stocks as s', 'o.stock_id', '=', 's.id') 
+	 .join('products as p', 's.product_id', '=', 'p.id') 
+	.select('o.*', 's.stock_name', 'p.product_name').then( ( data ) => {  
+	  if(data) {
+		  res.send({
+			  status: 200,
+			  data
+		  })
+	  } else {
+		res.send({
+		  status: 400,
+		  message: "Wrong information provided"
+		}); 
+		} 
+		});
+});
+
 
 //create a new stocks
 router.post("/", (req, res) => {   
   try {
-	const { stock_id, order_no, quantity, discount, item_price, sold_price } = req.body; 
+    const { stock_id, order_no, quantity, discount, item_price } = req.body; 
+    let {sold_price } = req.body; 
+    sold_price = quantity * item_price;
   const created_at = new Date().toLocaleString(); 
   
   const today= new Date();
