@@ -18,10 +18,10 @@ exports.up = function(knex) {
 		orderTable.increments();   
 		orderTable.integer('stock_id').unsigned().nullable();  
 		orderTable.string('order_no',  20).notNullable();  
-		orderTable.string('quantity',  10).notNullable();  
-		orderTable.string('discount',  10).nullable();  
-		orderTable.string('item_price',  10).notNullable();  
-		orderTable.string('sold_price',  10).notNullable(); 
+		orderTable.float('quantity').notNullable();  
+		orderTable.float('discount').nullable();  
+		orderTable.float('item_price').notNullable();  
+		orderTable.float('sold_price').notNullable(); 
 		orderTable.string('order_date',  15).notNullable();
 		orderTable.string('created_at',  50).nullable();
 		orderTable.string('updated_at',  50).nullable(); 
@@ -32,14 +32,14 @@ exports.up = function(knex) {
     .createTable( 'sales', function( salesTable ) {  
         salesTable.increments();   
         salesTable.string('order_no', 20).notNullable();  
-        salesTable.string( 'total' ).nullable();         
+        salesTable.float( 'total' ).notNullable();         
         salesTable.integer('customer_id').unsigned().nullable(); 
         salesTable.string( 'fullname', 30 ).nullable();  
         salesTable.string( 'email', 20 ).nullable();    
         salesTable.string( 'phone', 15 ).nullable();  
 	    	salesTable.string('sales_date',  15).notNullable();                  
         salesTable.enu('status', ['PAID', 'UNPAID', 'CANCELLED']).defaultTo('UNPAID');                  
-        salesTable.enu('respondent', ['REGISTERED', 'UNREGISTERED']);     
+        salesTable.enu('respondent', ['REGISTERED', 'UNREGISTERED']).defaultTo('UNREGISTERED');     
         salesTable.string('created_at',  50).nullable();
         salesTable.string('updated_at',  50).nullable();  
 		salesTable.foreign('customer_id').references('id').inTable('customers')

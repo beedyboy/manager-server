@@ -23,8 +23,8 @@ exports.up = function(knex) {
 		stockTable.increments();   
 		stockTable.integer('product_id').unsigned().nullable();  
 		stockTable.string( 'stock_name', 30 ).nullable();     
-		stockTable.string( 'quantity', 30 ).nullable();       
-		stockTable.string( 'price', 30 ).nullable();     
+		stockTable.float( 'quantity' ).nullable();       
+		stockTable.float( 'price' ).nullable();     
 		stockTable.string( 'expiry', 50 ).nullable();     
 		stockTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Active');    
 		stockTable.string('created_at',  50).nullable();
@@ -49,7 +49,7 @@ exports.up = function(knex) {
 		assetTable.increments();   
 		assetTable.integer('sub_id').unsigned().nullable();  
 		assetTable.string( 'title', 30 ).nullable();     
-		assetTable.string( 'purchased_price', 30 ).nullable();         
+		assetTable.float( 'purchased_price' ).nullable();         
 		assetTable.string( 'serial', 30 ).nullable();         
 		assetTable.text( 'description' ).nullable();    
 		assetTable.enu('status', ['Active', 'Pending', 'Deleted', 'Maintenance', 'Sold']).defaultTo('Active');    
