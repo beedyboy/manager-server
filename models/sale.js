@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');  
+const { useDate } = require('../lib/function');  
 
 const router = express.Router();
  
@@ -21,15 +22,40 @@ router.get("/", (req, res) => {
 		});
 }); 
 
+// get receivables
+router.get("/receivables", (req, res) => { 
+   db('sales').whereRaw('status = ?', ['UNPAID'])
+   .select().then( ( data ) => { 
+	  if(data) {
+		  res.send({
+			  status: 200,
+			  data
+		  })
+	  } else {
+		res.send({
+		  status: 400,
+		  message: "No available data"
+		});	  
+		}	  
+		});
+}); 
+
+router.get("/invoice/:invoice/search", (req, res) => {  
+	const order_no = req.params.invoice; 
+	db('sales as s').where('s.order_no', 'ilike', `%${order_no}%`) 
+	.select().then( ( data ) => {    
+		 res.status(200).json({
+		   status: 200,
+		   data
+		 })
+		  });
+  });
 
 router.post("/", (req, res) => {   
   try {
 	const { order_no,  customer_id, fullname, email, status, phone, respondent } = req.body; 
-  const created_at = new Date().toLocaleString();  
-  const today= new Date();
-  var mm = String(today.getMonth() + 1).padStart(2, '0')
-  var dd = String(today.getDate()).padStart(2, '0')
-    const sales_date = mm + '/' + dd + '/' + today.getFullYear(); 
+  const created_at = new Date().toLocaleString();   
+    const sales_date = useDate(); 
     db('orders').where({order_no}).sum({p: 'sold_price'}).then( (data) => {
       if (data) { 
         const total = data[0].p;
@@ -62,6 +88,25 @@ router.post("/", (req, res) => {
   } 
 }); 
  
+
+router.get("/:id/pay", (req, res) => {  
+	const id = req.params.id; 
+  helper.updateStatus('sales', id, 'PAID').then( ( data ) => {  
+    if(data === true) {
+      res.send({
+      status: 200, 
+      message: "Payment completed successfully" 
+     });
+    }
+      else {
+      res.send({
+      status: 400,
+      message: "Error in making payment" 
+      });
+      } 
+     });
+  });
+
 router.post("/status", (req, res) => {  
 	const {id, status} = req.body ;
 	helper.updateStatus('sales', id, status).then( ( data ) => {  

@@ -15,6 +15,7 @@ const stock = require('./stock');
 const order = require('./order');
 const sale = require('./sale');
 const ticket = require('./ticket');
+const report = require('./report');
 const conversation = require('./conversation');
 
 
@@ -34,6 +35,7 @@ routes.use("/stock", stock);
 routes.use("/order", order);
 routes.use("/sale", sale);
 routes.use("/ticket", ticket);
+routes.use("/report", report);
 routes.use("/conversation", conversation);
 
 module.exports = routes;

@@ -9,17 +9,17 @@ const cors = require("cors");
 var routes = require('./models/index'); 
 // var sms = require('./plugins/sms');
 const app = express();
+const origin = 'https://office-manager-client.herokuapp.com';
+// const origin = '*';
 app.use(cors({
   'allowedHeaders': ["Origin"," X-Requested-With", "Content-Type", "Accept", 'Authorization', "X-Access-Token"],
   'exposedHeaders': ['sessionId'], 
-  'origin': 'https://office-manager-client.herokuapp.com',
+  'origin': origin,
   'methods': 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE', 
   'preflightContinue': false,
   "optionsSuccessStatus": 200
 }));
-  
-  // 'origin': '',
-// app.use(cors());
+   
 
 app.use(express.static('views/'));
 app.use('/uploads/products', express.static('uploads/products'));

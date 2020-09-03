@@ -1,6 +1,7 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper'); 
+const { useDate } = require('../lib/function');  
 const fs = require('fs');
 
 const router = express.Router();
@@ -60,12 +61,8 @@ router.post("/", (req, res) => {
 	quantity = parseFloat(quantity);
 	const oldQty = quantity;
     sold_price = (quantity * parseFloat(item_price)) - parseFloat(discount);
-  const created_at = new Date().toLocaleString();  
-  const today= new Date();
-  var mm = String(today.getMonth() + 1).padStart(2, '0')
-  var dd = String(today.getDate()).padStart(2, '0')
-   const order_date =  mm + '/' + dd + '/' + today.getFullYear(); 
- 
+  const created_at = new Date().toLocaleString();   
+   const order_date =  useDate();  
 	db('orders').where({order_no}).andWhere({stock_id}).first().then( (data) => { 
 		if(data) { 
 			discount = discount + parseFloat(data.discount);
@@ -197,16 +194,38 @@ router.delete("/:id", (req, res) => {
   }
 })
 
-router.delete("/bulk/:arr", (req, res) => { 
+router.delete("/cart/:invoice/empty", (req, res) => { 
   try {
-	  var arr = req.params.arr;
-	  console.log({arr});
-   db('stocks').whereIn('order_no', arr).del().then( (result) => {
-       res.send({
-           status: 200,
-           message: 'Stock deleted successgully'
-       })
-   } )
+	  var order_no = req.params.invoice;
+	  db('orders').where({order_no}).groupBy('id')
+	  .select().then( (data) => {
+		if (data) { 
+			// const ids = Object.keys(data || {}).m
+			const order = data;
+			let count = order.length;
+			for (let index = 0; index < order.length; index++) {
+				const id = order[index].id;
+				const stock_id = order[index].stock_id;
+				const qty = order[index].quantity;
+				helper.plusStock(stock_id, qty);
+				helper.emptyCartItem(id); 
+				count -= 1;
+				
+			} 
+			if (count === 0) {
+				res.send({
+					status: 200,
+					message: 'Cart is now empty' 
+				})
+			}
+		}
+	  })
+//    db('stocks').whereIn('order_no', arr).del().then( (result) => {
+//        res.send({
+//            status: 200,
+//            message: 'Stock deleted successgully'
+//        })
+//    } )
   } catch(error) {
    console.log(error);
       res.send({
