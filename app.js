@@ -12,13 +12,13 @@ const app = express();
 app.use(cors({
   'allowedHeaders': ["Origin"," X-Requested-With", "Content-Type", "Accept", 'Authorization', "X-Access-Token"],
   'exposedHeaders': ['sessionId'], 
-  'origin': '*',
+  'origin': 'https://office-manager-client.herokuapp.com',
   'methods': 'OPTIONS,GET,HEAD,PUT,PATCH,POST,DELETE', 
   'preflightContinue': false,
   "optionsSuccessStatus": 200
 }));
   
-  // 'origin': 'https://office-manager-client.herokuapp.com',
+  // 'origin': '',
 // app.use(cors());
 
 app.use(express.static('views/'));

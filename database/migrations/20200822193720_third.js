@@ -37,8 +37,8 @@ exports.up = function(knex) {
         salesTable.string( 'fullname', 30 ).nullable();  
         salesTable.string( 'email', 20 ).nullable();    
         salesTable.string( 'phone', 15 ).nullable();  
-		salesTable.string('sales_date',  15).notNullable();                  
-        salesTable.enu('status', ['PAID', 'UNPAID']);                  
+	    	salesTable.string('sales_date',  15).notNullable();                  
+        salesTable.enu('status', ['PAID', 'UNPAID', 'CANCELLED']).defaultTo('UNPAID');                  
         salesTable.enu('respondent', ['REGISTERED', 'UNREGISTERED']);     
         salesTable.string('created_at',  50).nullable();
         salesTable.string('updated_at',  50).nullable();  
@@ -75,9 +75,10 @@ exports.up = function(knex) {
 		resTable.foreign('ticket_id').references('id').inTable('tickets')
 		.onDelete('CASCADE') .onUpdate('CASCADE'); 
 })
-  
+
 };
 
 exports.down = function(knex) {
   
 };
+ 

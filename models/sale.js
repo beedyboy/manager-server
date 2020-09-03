@@ -1,14 +1,12 @@
 const express = require('express');
 const db = require('../config/knex'); 
-const helper = require('../lib/helper'); 
-const fs = require('fs');
+const helper = require('../lib/helper');  
 
 const router = express.Router();
  
-//get stocks details by id
-router.get("/", (req, res) => {
-	const order_no = req.params.invoice;
-	 db('sales as o').where({order_no}).select().then( ( data ) => { 
+//get sales details by id
+router.get("/", (req, res) => { 
+	 db('sales').select().then( ( data ) => { 
 	  if(data) {
 		  res.send({
 			  status: 200,
@@ -18,37 +16,44 @@ router.get("/", (req, res) => {
 		res.send({
 		  status: 400,
 		  message: "Wrong information provided"
+		});	  
+		}	  
 		});
-	  
-		}
-	  
-		});
-});
+}); 
 
- 
 
-//create a new stocks
 router.post("/", (req, res) => {   
   try {
-	const { order_no,  total, customer_id, fullname, email, phone, respondent } = req.body; 
+	const { order_no,  customer_id, fullname, email, status, phone, respondent } = req.body; 
   const created_at = new Date().toLocaleString();  
   const today= new Date();
   var mm = String(today.getMonth() + 1).padStart(2, '0')
   var dd = String(today.getDate()).padStart(2, '0')
     const sales_date = mm + '/' + dd + '/' + today.getFullYear(); 
-  db('orders').insert({  order_no,  total, customer_id, fullname, email, phone, sales_date, respondent, created_at }).then( ( result ) => {  
-  if(result) { 
-	  res.send( {
-		  status: 200,
-		  message: 'Order completed successfully'
-		  } );
-  } else {
-	  res.send({
-		  status: 204,
-		  message: 'Order was not created'
-	  })
-  }
-  });
+    db('orders').where({order_no}).sum({p: 'sold_price'}).then( (data) => {
+      if (data) { 
+        const total = data[0].p;
+        db('sales').insert({  order_no,  total, customer_id, status, fullname, email, phone, sales_date, respondent, created_at }).then( ( result ) => {  
+          if(result) { 
+            res.send( {
+              status: 200,
+              message: 'Transaction completed successfully'
+              } );
+          } else {
+            res.send({
+              status: 400,
+              message: 'Transaction was not created'
+            })
+          }
+          });
+      } else {
+        res.send({
+          status: 400,
+          message: 'Transaction was not created'
+        })
+      }
+      })
+ 
   } catch(err) {
   console.log({err});
   res.status(500).json({
@@ -57,31 +62,24 @@ router.post("/", (req, res) => {
   } 
 }); 
  
-
-//check whether stocks exist
-router.post("/update", (req, res) => {  
-	const {id, order_no,  total, customer_id, fullname, email, phone, sales_date, respondent,} = req.body ;
-	const updated_at = new Date().toLocaleString();
-  db('sales').where('id', id).update( {order_no,  total, customer_id, fullname, email, phone, sales_date, respondent,  updated_at })
-  .then( ( data ) => {  
-	if(data) {
+router.post("/status", (req, res) => {  
+	const {id, status} = req.body ;
+	helper.updateStatus('sales', id, status).then( ( data ) => {  
+	if(data === true) {
 	  res.send({
 	  status: 200, 
-	  message: "Order updated successfully" 
+	  message: "Sales updated successfully" 
 	 });
 	}
 	  else {
 		res.send({
 		status: 400,
-		message: "Error updating order" 
+		message: "Error updating sales" 
 	  });
-	  }
-	
-	
+	  } 
 	 });
 			 
 });
-
 
 router.delete("/:id", (req, res) => { 
   try {

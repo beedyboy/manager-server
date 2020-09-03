@@ -10,7 +10,7 @@ router.get("/", (req, res) => {
 	 db('tickets as t')
 	 .join('staffs as s', 's.id', '=', 't.staff_id')
 	 .select('t.*', 's.firstname', 's.lastname').then( ( data ) => { 
-		 console.log({data})
+		//  console.log({data})
 	  if(data) {
 		  res.send({
 			  status: 200,
@@ -80,7 +80,7 @@ router.post("/", checkHeader, (req, res) => {
 }); 
  
 
-//check whether ticket exist
+//update ticket details
 router.post("/update", (req, res) => {  
 	const {id, title, description, email, staff_id, ticket_date, requester, category, priority} = req.body ;
 	const updated_at = new Date().toLocaleString();
@@ -104,7 +104,7 @@ router.post("/update", (req, res) => {
 			 
 });
 
-//check whether ticket exist
+//give a task to a manager
 router.post("/assign", (req, res) => {  
 	const {id, assigned_to} = req.body ;
 	const updated_at = new Date().toLocaleString();
@@ -127,7 +127,7 @@ router.post("/assign", (req, res) => {
 	 });
 			 
 });
-//check whether ticket exist
+//toggle status
 router.post("/status", (req, res) => {  
 	const {id, status} = req.body ;
 	helper.updateStatus('tickets', id, status).then( ( data ) => {  
