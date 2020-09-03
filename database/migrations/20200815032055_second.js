@@ -4,6 +4,16 @@ exports.up = function(knex) {
  return knex
     .schema
   
+	.createTable( 'company', function( comTable ) {  
+		 comTable.increments();
+		 comTable.string( 'companyname', 30 ).nullable();
+		 comTable.text( 'address' ).nullable(); 
+		 comTable.string( 'email', 50 ).nullable(); 
+		 comTable.string( 'phone', 50 ).nullable(); 
+		 comTable.string('created_at',  50).notNullable();
+		 comTable.string('updated_at',  50).nullable(); 
+	 })
+	 
 .createTable( 'products', function( productTable ) {  
 		productTable.increments();  
 		productTable.integer('cat_id').unsigned().nullable(); 

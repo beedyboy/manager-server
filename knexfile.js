@@ -1,14 +1,7 @@
 // Update with your config settings.
 
-module.exports = {
-
+module.exports = { 
    development: {
-   migrations: {
-      directory: './database/migrations'
-    },
-    seeds: {
-      directory: './database/seeds'      
-    },
     client: 'pg',
     connection: {     
       host: '127.0.0.1',
@@ -16,15 +9,21 @@ module.exports = {
       password: 'dontopen',
       database: 'manager',
       charset: 'utf8'
+    },
+   migrations: {
+      directory: './database/migrations'
+    },
+    seeds: {
+      directory: './database/seeds'      
     }
   },
 
   staging: {
-    client: 'postgresql',
+    client: 'pg',
     connection: {
-      database: 'my_db',
-      user:     'username',
-      password: 'password'
+      database: 'manager',
+      user:     'postgres',
+      password: 'dontopen'
     },
     pool: {
       min: 2,
