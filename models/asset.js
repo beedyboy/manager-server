@@ -96,6 +96,31 @@ router.get('/', (req, res) => {
     }
 })
 
+router.get('/:id', (req, res) => {
+    try {
+        const id = parseFloat(req.params.id)
+        db('assets as a').where('a.id', id)
+    .join('subcategory as s', 'a.sub_id', '=', 's.id')
+    .select('a.*', 's.sub_name as subName', 's.cat_id').then((data) => { 
+       if(data) {
+        res.send({
+            status: 200,
+            data
+        })
+       } else {
+        res.send({
+            status: 400
+        })
+       }
+    })        
+    } catch (error) {
+        res.status(500).send({
+            status: 500,
+            message: 'Something went wrong with the server'
+        })
+    }
+})
+
 
 router.get('/:sub/:title/exist', (req, res) => {
     try {

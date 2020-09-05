@@ -38,8 +38,7 @@ const db = require('../config/knex');
 
  function checkHeader(req, res, next) {
   try { 
-    if(req.headers.authorization && (req.headers.authorization.split(' ')[0] === 'bearer'
-     || req.headers.authorization.split(' ')[0] === 'Bearer')) {
+    if(req.headers.authorization.split(' ')[0] === 'Bearer') {
       const token = req.headers.authorization.split(' ')[1];  
       db('logins').where({token})
       .join('staffs as s', 'logins.staff_id', '=', 's.id')

@@ -78,10 +78,11 @@ router.post("/create/login", validate('logins'),  (req, res) => {
      });
 });
 
-  router.get("/profile", checkHeader, (req, res) => {
+  router.get("/get/profile", checkHeader, (req, res) => {
      const id = req.user.id;  
-     db('staffs as u').where('u.id', id) 
-     .select().then( (data) => { 
+     db('staffs as s').where('s.id', id)
+     .join('branches as b', 's.branch_id', '=', 'b.id') 
+     .first('s.*', 'b.name as branchName').then( (data) => { 
        if(data) {
               res.send({
                   status: 200,
@@ -95,7 +96,37 @@ router.post("/create/login", validate('logins'),  (req, res) => {
 
   });
 
-//update user
+  router.post("/update/profile", checkHeader, (req, res) => {
+    try {
+       const id = req.user.id;  
+      const { firstname, lastname, phone_number} = req.body ;
+      const updated_at = new Date().toLocaleString();
+    db('staffs').where('id', id).update( {  firstname, lastname, phone_number, updated_at })
+    .then( ( data ) => {  
+      if(data) {
+        res.send({
+        status: 200, 
+        message: "Profile updated successfully" 
+       });
+      }
+        else {
+          res.send({
+          status: 400,
+          message: "Error updating profile" 
+        });
+        } 
+       });
+               
+    } catch(error) {
+      console.log('error', error);
+      res.send({
+        status: 400,
+        message: error
+      })
+    }
+  });
+  
+//update staff
 router.post("/update", checkHeader, (req, res) => {
   try {
      const id = req.user.id;  
