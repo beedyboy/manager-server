@@ -99,9 +99,9 @@ router.post("/create/login", validate('logins'),  (req, res) => {
   router.post("/update/profile", checkHeader, (req, res) => {
     try {
        const id = req.user.id;  
-      const { firstname, lastname, phone_number} = req.body ;
+      const { firstname, lastname, phone_number, address, emergency_contact, emergency_phone,} = req.body ;
       const updated_at = new Date().toLocaleString();
-    db('staffs').where('id', id).update( {  firstname, lastname, phone_number, updated_at })
+    db('staffs').where('id', id).update( {  firstname, lastname, phone_number, address, emergency_contact, emergency_phone, updated_at })
     .then( ( data ) => {  
       if(data) {
         res.send({
@@ -130,7 +130,7 @@ router.post("/create/login", validate('logins'),  (req, res) => {
 router.post("/update", checkHeader, (req, res) => {
   try {
      const id = req.user.id;  
-    const {email, firstname, lastname, phone:phone_number, address, emergency_contact, emergency_phone , acl, branch_id} = req.body ;
+    const {email, firstname, lastname, phone:phone_number, address, emergency_contact, emergency_phone, acl, branch_id} = req.body ;
     const updated_at = new Date().toLocaleString();
   db('staffs').where('id', id).update( { email, firstname, lastname, phone:phone_number, address, emergency_contact, emergency_phone , acl, branch_id, updated_at })
   .then( ( data ) => {  
