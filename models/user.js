@@ -160,9 +160,7 @@ router.post("/update", checkHeader, (req, res) => {
 router.post("/acl", checkHeader, (req, res) => {
   try { 
     const {priviledges, id} = req.body ;
-    const acl = JSON.stringify(req.body.priviledges);
-    console.log({acl})
-    console.log({id})
+    const acl = JSON.stringify(req.body.priviledges); 
     const updated_at = new Date().toLocaleString();
   db('staffs').where('id', id).update( { acl, updated_at })
   .then( ( data ) => {  
