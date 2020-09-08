@@ -1,7 +1,6 @@
 const express = require("express");
 const db = require("../config/knex");
-const helper = require("../lib/helper");
-const { getRandomNo } = require("../lib/function");
+const helper = require("../lib/helper"); 
 const { checkHeader } = require("../middleware/valid");
 const bcrypt = require("bcryptjs");
 
@@ -37,8 +36,9 @@ router.get("/:id", (req, res) => {
 
 //create Allocation
 router.post("/individual", checkHeader, (req, res) => {
-  const { asset_id, staff_id, quantity, dept_id, note } = req.body;
+  const { asset_id, staff_id, dept_id, note } = req.body;
   const created_at = new Date().toLocaleString();
+  const quantity = 1;
   const type = "Individual";
   db("allocations")
     .insert({ asset_id, staff_id, quantity, dept_id, note, type, created_at })
@@ -61,8 +61,9 @@ router.post("/individual", checkHeader, (req, res) => {
 });
 
 router.post("/departmental", checkHeader, (req, res) => {
-  const { asset_id, branch_id, quantity, dept_id, note } = req.body;
+  const { asset_id, branch_id, dept_id, note } = req.body;
   const created_at = new Date().toLocaleString();
+  const quantity = 1;
   const type = "Departmental";
   db("allocations")
     .insert({

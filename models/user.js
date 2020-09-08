@@ -156,6 +156,38 @@ router.post("/update", checkHeader, (req, res) => {
     })
   }
 });
+//update staff
+router.post("/acl", checkHeader, (req, res) => {
+  try { 
+    const {priviledges, id} = req.body ;
+    const acl = JSON.stringify(req.body.priviledges);
+    console.log({acl})
+    console.log({id})
+    const updated_at = new Date().toLocaleString();
+  db('staffs').where('id', id).update( { acl, updated_at })
+  .then( ( data ) => {  
+    if(data) {
+      res.send({
+      status: 200, 
+      message: "Access Level has been set successfully" 
+     });
+    }
+      else {
+        res.send({
+        status: 400,
+        message: "Error setting access level" 
+      });
+      } 
+     });
+             
+  } catch(error) {
+    console.log('error', error);
+    res.send({
+      status: 400,
+      message: error
+    })
+  }
+});
 
   
 router.delete("/:id", checkHeader, (req, res) => { 

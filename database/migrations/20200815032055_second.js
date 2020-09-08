@@ -98,8 +98,7 @@ exports.up = function(knex) {
 		maintTable.integer('asset_id').unsigned().nullable();  
 		maintTable.string( 'maintenance_date', 30 ).nullable();     
 		maintTable.string( 'cost', 30 ).nullable();         
-		maintTable.text( 'description' ).nullable();    
-		maintTable.string( 'maint_date', 30 ).nullable();         
+		maintTable.text( 'description' ).nullable();     
 		maintTable.enu('status', ['Active', 'Completed', 'Deleted']).defaultTo('Active');     
 		maintTable.string('created_at',  50).nullable();
 		maintTable.string('updated_at',  50).nullable(); 
