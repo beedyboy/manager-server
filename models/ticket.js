@@ -10,8 +10,7 @@ const router = express.Router();
 router.get("/", (req, res) => { 
 	 db('tickets as t')
 	 .join('staffs as s', 's.id', '=', 't.staff_id')
-	 .select('t.*', 's.firstname', 's.lastname').then( ( data ) => { 
-		//  console.log({data})
+	 .select('t.*', 's.firstname', 's.lastname').then( ( data ) => {  
 	  if(data) {
 		  res.send({
 			  status: 200,
@@ -26,6 +25,34 @@ router.get("/", (req, res) => {
 		}
 	  
 		});
+});
+//get all tickets
+router.get("/myticket", checkHeader, (req, res) => { 
+	try {
+		const staff_id = req.user.id;  
+	 db('tickets as t').where('t.staff_id', staff_id)
+	 .select().then( ( data ) => {  
+	  if(data) {
+		  res.send({
+			  status: 200,
+			  data
+		  })
+	  } else {
+		res.send({
+		  status: 400,
+		  message: "Wrong information provided"
+		});
+	  
+		}
+	  
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(500).send({
+			status: 500,
+			message: "Something went wrong with your request"
+		})
+	}
 });
 
 router.get("/:id", (req, res) => {
@@ -45,17 +72,16 @@ router.get("/:id", (req, res) => {
 		}
 	  
 		});
-});
-
- 
+}); 
 
 //create a new ticket
 router.post("/", checkHeader, (req, res) => {   
   try {
-	const staff_id = req.user.id;  
-	const { name: title, description, email, requester, category, priority } = req.body; 
+	const { name: title, description, email, requester, category, priority, user } = req.body;
   const created_at = new Date().toLocaleString();    
-  const ticket_date = useDate();
+  const ticket_date = useDate(); 
+	if (user === "Admin") {
+		const { staff_id } = req.body;  
   db('tickets').insert({ title, description, email, staff_id, ticket_date, requester, category, priority, created_at }).then( ( result ) => {  
   if(result) { 
 	  res.send( {
@@ -69,6 +95,23 @@ router.post("/", checkHeader, (req, res) => {
 	  })
   }
   });
+	} else {
+		const staff_id = req.user.id;  
+  db('tickets').insert({ title, description, email, staff_id, ticket_date, requester, category, priority, created_at }).then( ( result ) => {  
+  if(result) { 
+	  res.send( {
+		  status: 200,
+		  message: 'Ticket created successfully'
+		  } );
+  } else {
+	  res.send({
+		  status: 204,
+		  message: 'Ticket was not created'
+	  })
+  }
+  });
+	}
+	
   } catch(err) {
   console.log({err});
   res.status(500).json({
