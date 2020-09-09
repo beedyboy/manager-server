@@ -40,7 +40,7 @@ router.post("/assets", (req, res) => {
 	 db('assets')
 	 .select()
 	 .whereBetween('purchased_date', [ start_date, end_date ])
-	 .then( ( data ) => {  
+	 .then( ( data ) => {   
 	  if(data) {
 		  res.send({
 			  status: 200,

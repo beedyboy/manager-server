@@ -1,16 +1,16 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');
-const {validate, checkHeader} = require('../middleware/valid'); 
+// const {validate, checkHeader} = require('../middleware/valid'); 
 const router = express.Router(); 
 
 
 router.post('/', (req, res) => {
     try {
-       const { sub_id, name:title, purchased_price, serial, company_name, start_date, end_date, description, purchased_date } = req.body;
+       const { sub_id, name:title, purchased_price, serial, company_name, condition, start_date, end_date, description, purchased_date } = req.body;
        const created_at = new Date().toLocaleString();  
         db('assets').returning('id')
-        .insert({sub_id, title, purchased_price, serial, description, company_name, start_date, end_date, purchased_date, created_at})
+        .insert({sub_id, title, purchased_price, serial, description, company_name, condition, start_date, end_date, purchased_date, created_at})
         .then( (data) => {
             if(data) {
                 res.json({
