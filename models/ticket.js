@@ -57,9 +57,9 @@ router.get("/myticket", checkHeader, (req, res) => {
 router.get("/:id", (req, res) => {
   const id = req.params.id;
   db("tickets as t")
-	.where('t.id', id)
-	.leftJoin('staffs as s', 't.assigned_to',   's.id' )
-    .select('t.*', 's.firstname', 's.lastname')
+    .where("t.id", id)
+    .leftJoin("staffs as s", "t.assigned_to", "s.id")
+    .select("t.*", "s.firstname", "s.lastname")
     .then((data) => {
       if (data) {
         res.send({

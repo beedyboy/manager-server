@@ -123,8 +123,7 @@ router.delete("/:id", (req, res) => {
 
 router.delete("/bulk/:arr", (req, res) => { 
   try {
-	  var arr = req.params.arr;
-	  console.log({arr});
+	  var arr = req.params.arr; 
    db('stocks').whereIn('id', arr).del().then( (result) => {
        res.send({
            status: 200,
