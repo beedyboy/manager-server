@@ -51,10 +51,10 @@ const db = require('../config/knex');
           res.json({
             status: 500,
             success: false,
-            message: "Invalid token! Please login again"
+            message: "Invalid token! Please login again" + token
         });
         }
-      }).catch(err => console.log('buyer', err))
+      }).catch(err => console.log('token', err))
     }
 } catch (err) {
   console.log('error', err);
