@@ -40,6 +40,7 @@ const db = require('../config/knex');
   try { 
     if(req.headers.authorization.split(' ')[0] === 'Bearer') {
       const token = req.headers.authorization.split(' ')[1];  
+      console.log({token}, req.headers.authorization)
       db('logins').where({token})
       .join('staffs as s', 'logins.staff_id', '=', 's.id')
       .select('logins.token', 'logins.staff_id', 'logins.id as login_id', 's.*').then((data) => { 

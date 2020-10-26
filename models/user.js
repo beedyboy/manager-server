@@ -187,9 +187,9 @@ router.post("/update/profile", checkHeader, (req, res) => {
 
 //update staff
 router.post("/update", checkHeader, (req, res) => {
-  try {
-    const id = req.user.id;
+  try { 
     const {
+      id,
       email,
       firstname,
       lastname,
@@ -207,7 +207,7 @@ router.post("/update", checkHeader, (req, res) => {
         email,
         firstname,
         lastname,
-        phone: phone_number,
+        phone_number,
         address,
         emergency_contact,
         emergency_phone,
