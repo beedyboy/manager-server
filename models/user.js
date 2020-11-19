@@ -31,6 +31,7 @@ router.post("/", validate("staffs"), (req, res) => {
       lastname,
       phone: phone_number,
       acl,
+      staffId,
       branch_id,
     } = req.body;
     const created_at = new Date().toLocaleString();
@@ -42,6 +43,7 @@ router.post("/", validate("staffs"), (req, res) => {
         lastname,
         phone_number,
         acl,
+        staffId,
         branch_id,
         created_at,
       })
@@ -195,6 +197,7 @@ router.post("/update", checkHeader, (req, res) => {
       lastname,
       phone: phone_number,
       address,
+      staffId,
       emergency_contact,
       emergency_phone,
       acl,
@@ -209,6 +212,7 @@ router.post("/update", checkHeader, (req, res) => {
         lastname,
         phone_number,
         address,
+        staffId,
         emergency_contact,
         emergency_phone,
         acl,
