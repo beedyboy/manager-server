@@ -4,12 +4,70 @@ const helper = require("../lib/helper");
 const { checkHeader, validateName } = require("../middleware/valid");
 const router = express.Router();
 
-//get leaves details by id
-router.get("/:id", (req, res) => {
-  const id = req.params.id;
-  const result = db("leaves")
-    .where({ id })
+/**
+ * Leave types section
+ */
+
+router.get("/", (req, res) => {
+  try {
+    const result = db("leaves")
     .select()
+    .then((data) => {
+      res.send(data).status(200);
+    });
+    
+  } catch (error) {
+    console.log({error})
+  }
+});
+ 
+router.get("/:leave_type/exist", (req, res) => {  
+  const leave_type = req.params.leave_type ;
+  db("leaves").where({leave_type}).select().then((data) => {
+    if(data.length > 0) {  
+      res.send({exist: true}); 
+  } else {
+    res.send({exist: false}); 
+  }
+  }) 
+ 
+});
+router.post("/", checkHeader, (req, res, next) => {
+  try {
+    const { leave_type, allowed_days, description } = req.body;
+    const created_at = new Date().toLocaleString();
+
+    db("leaves")
+      .insert({ leave_type, allowed_days, description, created_at })
+      .then((result) => {
+        if (result) {
+          res.send({
+            status: 200,
+            message: "Leave created successfully",
+          });
+        } else {
+          res.send({
+            status: 204,
+            message: "Leave was not created",
+          });
+        }
+      });
+  } catch (err) {
+    console.log("Error", err);
+  }
+});
+
+ /**
+  * Leave applications down here
+  */
+//get leave_applications details by id
+router.get("/application/:id", (req, res) => {
+  const id = req.params.id; 
+  const result = db("leave_applications as a")
+  .where('a.id', id) 
+    .join("leaves as l", "a.leave_type_id", "=", "l.id")
+    .join("staffs as s", "a.staff_id", "=", "s.id")
+    .select("a.*", "l.leave_type", "l.allowed_days", "s.firstname", "s.lastname") 
     .then((data) => {
       if (data) {
         res.send({
@@ -24,42 +82,53 @@ router.get("/:id", (req, res) => {
       }
     });
 });
+ 
 
-//check whether leaves exist
-router.get("/:doc_type/exist", (req, res) => {
-  const doc_type = req.params.name;
-  helper.nameExist("leaves", doc_type).then((result) => {
-    res.send({ exist: result });
-  });
-});
-
-//get all modules
-router.get("/", (req, res) => {
-  const result = db("leaves")
-    .select()
+//get all leave_applications
+router.get("/application/", (req, res) => {
+  const result = db("leave_applications as a")
+  .join("leaves as l", "a.leave_type_id", "=", "l.id")
+  .select("a.*", "l.leave_type") 
     .then((data) => {
       res.send(data).status(200);
     });
 });
 
-//create a new leaves
-router.post("/", checkHeader, (req, res, next) => {
-  try {
-    const { doc_type, title, description } = req.body;
-    const created_at = new Date().toLocaleString();
+//get all my app
+router.get("/myapplication/", checkHeader, (req, res) => { 
+ try {
+  const staff_id = parseInt(req.user.id); 
+  db("leave_applications as a")
+    .where({staff_id}) 
+    .join("leaves as l", "a.leave_type_id", "=", "l.id")
+    .select("a.*", "l.leave_type") 
+    .then((data) => {
+      res.send(data).status(200);
+    });
+   
+ } catch (error) {
+   console.log({error})
+ }
+});
 
-    db("leaves")
-      .insert({ doc_type, title, description, created_at })
+//create a new leave_applications
+router.post("/myapplication/", checkHeader, (req, res, next) => {
+  try {
+    const { leave_type_id, description, leave_start_date, leave_end_date } = req.body;
+    const created_at = new Date().toLocaleString();
+    const staff_id = parseInt(req.user.id);
+    db("leave_applications")
+      .insert({ staff_id, leave_type_id, description, leave_start_date, leave_end_date, created_at })
       .then((result) => {
         if (result) {
           res.send({
             status: 200,
-            message: "New document created successfully",
+            message: "Leave Application created successfully",
           });
         } else {
           res.send({
             status: 204,
-            message: "Document was not created",
+            message: "Application was not created",
           });
         }
       });
@@ -68,12 +137,12 @@ router.post("/", checkHeader, (req, res, next) => {
   }
 });
 
-//check whether leaves exist
-router.post("/update", checkHeader, (req, res) => {
+//check whether leave_applications exist
+router.post("/myapplication/update", checkHeader, (req, res) => {
   try {
     const { id, title, doc_type, description } = req.body;
     const updated_at = new Date().toLocaleString();
-    db("leaves")
+    db("leave_applications")
       .where("id", id)
       .update({ title, doc_type, description, updated_at })
       .then((data) => {
@@ -97,10 +166,25 @@ router.post("/update", checkHeader, (req, res) => {
     });
   }
 });
-
-router.delete("/:id", checkHeader, (req, res) => {
+router.post("/status", (req, res) => {
+  const { id, admin_remark, status } = req.body;
+  helper.updateStatus("leave_applications", id, admin_remark, status).then((data) => {
+    if (data === true) {
+      res.send({
+        status: 200,
+        message: "Application updated successfully",
+      });
+    } else {
+      res.send({
+        status: 400,
+        message: "Error updating application",
+      });
+    }
+  });
+});
+router.delete("/myapplication/:id", checkHeader, (req, res) => {
   try {
-    db("leaves")
+    db("leave_applications")
       .where("id", req.params.id)
       .del()
       .then((result) => {
