@@ -25,21 +25,21 @@ exports.up = function(knex) {
 		 docTable.string('updated_at',  50).nullable(); 
 		 docTable.enu('status', ['Active', 'Pending', 'Deleted']).defaultTo('Active');   
 	 }) 
-     .createTable( 'leaves', function( leaveTable ) {  
-		leaveTable.increments();   
-		leaveTable.integer('staff_id').unsigned().nullable(); 
-		leaveTable.string( 'start_date', 30 ).notNullable();    
-		leaveTable.string( 'end_date', 30 ).nullable();    
-		leaveTable.text( 'note' ).nullable();      
-		leaveTable.integer('checked_by').unsigned().nullable();   
-		leaveTable.enu('status', ['Active', 'Returned', 'Pending', 'Declined']).defaultTo('Pending');    
-		leaveTable.string('created_at',  50).nullable();
-		leaveTable.string('updated_at',  50).nullable();  
-		leaveTable.foreign('staff_id').references('id').inTable('staffs')
-		.onDelete('CASCADE') .onUpdate('CASCADE');  
-		leaveTable.foreign('checked_by').references('id').inTable('staffs')
-		.onDelete('CASCADE') .onUpdate('CASCADE');  
-})
+//      .createTable( 'leaves', function( leaveTable ) {  
+// 		leaveTable.increments();   
+// 		leaveTable.integer('staff_id').unsigned().nullable(); 
+// 		leaveTable.string( 'start_date', 30 ).notNullable();    
+// 		leaveTable.string( 'end_date', 30 ).nullable();    
+// 		leaveTable.text( 'note' ).nullable();      
+// 		leaveTable.integer('checked_by').unsigned().nullable();   
+// 		leaveTable.enu('status', ['Active', 'Returned', 'Pending', 'Declined']).defaultTo('Pending');    
+// 		leaveTable.string('created_at',  50).nullable();
+// 		leaveTable.string('updated_at',  50).nullable();  
+// 		leaveTable.foreign('staff_id').references('id').inTable('staffs')
+// 		.onDelete('CASCADE') .onUpdate('CASCADE');  
+// 		leaveTable.foreign('checked_by').references('id').inTable('staffs')
+// 		.onDelete('CASCADE') .onUpdate('CASCADE');  
+// })
 };
 
 exports.down = function(knex) {

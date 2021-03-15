@@ -1,9 +1,7 @@
 exports.up = function (knex) {
   return knex.schema
 
-    .alterTable("maintenance", function (t) {
-      t.dropColumn("maint_date");
-    })
+   
     .alterTable("stocks", function (t) {
       t.float("quantity").notNullable().alter();
       t.float("price").notNullable().alter();
