@@ -7,15 +7,17 @@ const { validate, checkHeader } = require("../middleware/valid");
 
 router.post("/", checkHeader, (req, res) => {
   try {
-    const { staff_id } = req.body;
-    const pre_contract = JSON.stringify(req.body.pre_contract);
-    const general = JSON.stringify(req.body.general);
-    const student = JSON.stringify(req.body.student);
-    const para_professional = JSON.stringify(req.body.para_professional);
-    const professional = JSON.stringify(req.body.professional);
-    const marketing = JSON.stringify(req.body.marketing);
-    const management_executive = JSON.stringify(req.body.management_executive);
-    const post_contract = JSON.stringify(req.body.post_contract);
+    const { staff_id, onBoarding } = req.body;
+    const pre_contract = JSON.stringify(onBoarding.pre_contract);
+    const general = JSON.stringify(onBoarding.general);
+    const student = JSON.stringify(onBoarding.student);
+    const para_professional = JSON.stringify(onBoarding.para_professional);
+    const professional = JSON.stringify(onBoarding.professional);
+    const marketing = JSON.stringify(onBoarding.marketing);
+    const management_executive = JSON.stringify(onBoarding.management_executive);
+    const post_contract = JSON.stringify(onBoarding.post_contract);
+    console.log(req.body)
+ console.log({professional})
  
     const updated_at = new Date().toLocaleString();
     const onboarded = "Yes";
@@ -53,15 +55,15 @@ router.post("/", checkHeader, (req, res) => {
 }) 
 router.put("/", validate("staffs"), (req, res) => {
   try {
-    const { id } = req.body;
-    const pre_contract = JSON.stringify(req.body.pre_contract);
-    const general = JSON.stringify(req.body.general);
-    const student = JSON.stringify(req.body.student);
-    const para_professional = JSON.stringify(req.body.para_professional);
-    const professional = JSON.stringify(req.body.professional);
-    const marketing = JSON.stringify(req.body.marketing);
-    const management_executive = JSON.stringify(req.body.management_executive);
-    const post_contract = JSON.stringify(req.body.post_contract);
+    const { id, onBoarding } = req.body;
+    const pre_contract = JSON.stringify(onBoarding.pre_contract);
+    const general = JSON.stringify(onBoarding.general);
+    const student = JSON.stringify(onBoarding.student);
+    const para_professional = JSON.stringify(onBoarding.para_professional);
+    const professional = JSON.stringify(onBoarding.professional);
+    const marketing = JSON.stringify(onBoarding.marketing);
+    const management_executive = JSON.stringify(onBoarding.management_executive);
+    const post_contract = JSON.stringify(onBoarding.post_contract);
     db("onboarding")
     .where("id", id)
     .update({ 
