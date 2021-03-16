@@ -67,8 +67,7 @@ exports.up = function(knex) {
 		assetTable.string('start_date', 30).nullable();  
 		assetTable.string('end_date', 30).nullable();  
 		assetTable.text( 'description' ).nullable();    
-		assetTable.enu('status', ['Active', 'Pending', 'Deleted', 'Maintenance', 'Sold']).defaultTo('Active');    
-		assetTable.enu('condition', ['New', 'Used', 'Rented', 'Leased']).defaultTo('New');    
+		assetTable.enu('status', ['Active', 'Pending', 'Deleted', 'Maintenance', 'Sold']).defaultTo('Active');   
 		assetTable.string('purchased_date',  50).nullable();
 		assetTable.string('date_sold',  50).nullable();
 		assetTable.string('created_at',  50).nullable();
