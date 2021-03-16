@@ -1,5 +1,5 @@
 {
-  "name": "managerServer",
+  "name": "office-manager-server",
   "version": "1.0.0",
   "description": "\"# managerServer\"",
   "main": "app.js",
@@ -28,7 +28,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.21.1",
+    "knex": "^0.95.2",
     "moment": "^2.27.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
@@ -37,6 +37,6 @@
     "nodemailer-express-handlebars": "^4.0.0",
     "nodemon": "^2.0.4",
     "nvm": "0.0.4",
-    "pg": "^8.3.0"
+    "pg": "^8.5.1"
   }
 }
