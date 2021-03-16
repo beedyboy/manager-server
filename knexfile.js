@@ -43,7 +43,7 @@ module.exports = {
       password: '48f4642db8f7473f34c672d2f87b6116f2200e1fb116b12179c165c08f997b86',
       database: 'dc3ikd68gimvte',
       charset: 'utf8',
-    ssl: true,
+      ssl: { rejectUnauthorized: false }
     },
     pool: {
       min: 2,
