@@ -45,7 +45,7 @@ const result = db('branches').select().then( ( data ) => {
 
 
 //create a new branches
-router.post("/", checkHeader, validateName('branches'), (req, res, next) => {   
+router.post("/",   validateName('branches'), (req, res, next) => {   
    try {
      const {name, address, email,  phone} = req.body; 
     const created_at = new Date().toLocaleString();  
