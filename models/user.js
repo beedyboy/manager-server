@@ -23,7 +23,7 @@ router.get("/:email/exist", (req, res) => {
   }
 });
 //register user
-router.post("/", validate("staffs"), (req, res) => {
+router.post("/", checkHeader, validate("staffs"), (req, res) => {
   try {
     const {
       email,
@@ -241,7 +241,7 @@ router.post("/update", checkHeader, (req, res) => {
   }
 });
 //update staff
-router.post("/acl",  (req, res) => {
+router.post("/acl", checkHeader, (req, res) => {
   try {
     const { priviledges, id } = req.body;
     const acl = JSON.stringify(req.body.priviledges);
