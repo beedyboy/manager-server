@@ -8,8 +8,8 @@ const fs = require("fs");
 const cors = require("cors");
 var routes = require("./models/index"); 
 const app = express(); 
-// const origin = "https://office-manager-client.herokuapp.com";
-const origin = '*';
+const origin = "https://office-manager-client.herokuapp.com";
+// const origin = '*';
 app.use(
   cors({
     allowedHeaders: [
