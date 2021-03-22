@@ -271,6 +271,47 @@ router.post("/acl", checkHeader, (req, res) => {
   }
 });
 
+
+
+
+//update staff
+router.post("/update/signature", checkHeader, (req, res) => {
+  try { 
+    const {
+      id,
+      signature, 
+    } = req.body;
+    const signed = "Yes"
+    const updated_at = new Date().toLocaleString();
+    db("staffs")
+      .where("id", id)
+      .update({
+        signature,
+        signed,  
+        updated_at,
+      })
+      .then((data) => {
+        if (data) {
+          res.send({
+            status: 200,
+            message: "Account updated successfully",
+          });
+        } else {
+          res.send({
+            status: 400,
+            message: "Error updating info",
+          });
+        }
+      });
+  } catch (error) {
+    console.log("error", error);
+    res.send({
+      status: 400,
+      message: error,
+    });
+  }
+});
+
 router.delete("/:id", checkHeader, (req, res) => {
   try {
     db("staffs")
