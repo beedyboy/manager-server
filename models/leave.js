@@ -1,8 +1,8 @@
 const express = require("express");
-const db = require("../config/knex");
-const helper = require("../lib/helper");
+const db = require("../config/knex"); 
 const { checkHeader, validateName } = require("../middleware/valid");
 const router = express.Router();
+const getDaysDiff  = require('../lib/function');
 
 /**
  * Leave types section
@@ -88,7 +88,8 @@ router.get("/application/:id", (req, res) => {
 router.get("/application/", (req, res) => {
   const result = db("leave_applications as a")
   .join("leaves as l", "a.leave_type_id", "=", "l.id")
-  .select("a.*", "l.leave_type") 
+  .join("staffs as s", "a.staff_id", "=", "s.id")
+  .select("a.*", "l.leave_type", "s.firstname", "s.lastname", "s.email") 
     .then((data) => {
       res.send(data).status(200);
     });
@@ -117,8 +118,10 @@ router.post("/myapplication/", checkHeader, (req, res, next) => {
     const { leave_type_id, description, leave_start_date, leave_end_date } = req.body;
     const created_at = new Date().toLocaleString();
     const staff_id = parseInt(req.user.id);
+    const days = getDaysDiff(leave_start_date, leave_end_date);
+    console.log({days})
     db("leave_applications")
-      .insert({ staff_id, leave_type_id, description, leave_start_date, leave_end_date, created_at })
+      .insert({ staff_id, leave_type_id, days, description, leave_start_date, leave_end_date, created_at })
       .then((result) => {
         if (result) {
           res.send({
@@ -167,9 +170,7 @@ router.post("/myapplication/update", checkHeader, (req, res) => {
   }
 });
 router.post("/status", (req, res) => {
-  const { id, admin_remark, status } = req.body;
-  console.log({status})
-  console.log({admin_remark})
+  const { id, admin_remark, status } = req.body; 
   const updated_at = new Date().toLocaleString();
   db('leave_applications').where('id', id).update( { admin_remark, status,  updated_at }).then((data) => {
     if (data) {
@@ -193,7 +194,7 @@ router.delete("/myapplication/:id", checkHeader, (req, res) => {
       .then((result) => {
         res.send({
           status: 200,
-          message: "Document deleted successfully",
+          message: "Application deleted successfully",
         });
       })
       .catch((err) => {

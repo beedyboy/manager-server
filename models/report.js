@@ -1,7 +1,7 @@
 const express = require('express');
 const db = require('../config/knex'); 
 const helper = require('../lib/helper');   
-const moment =  require('moment');
+// const moment =  require('moment');
 
 const router = express.Router();
 const dateFormat = 'YYYY/MM/DD';
@@ -13,7 +13,7 @@ router.post("/sales", (req, res) => {
 	// start_date =  moment(start_date, dateFormat);
 	// end_date =  moment(end_date, dateFormat);
 	
-	console.log({  start_date  }, end_date)
+	// console.log({  start_date  }, end_date)
 	 db('sales')
 	 .select()
 	 .whereBetween('sales_date', [ start_date, end_date ])

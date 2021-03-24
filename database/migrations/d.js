@@ -41,6 +41,7 @@ exports.up = function(knex) {
 		leaveTable.integer('leave_type_id').unsigned().nullable();  
         leaveTable.string( 'leave_start_date', 20 ).nullable();      
         leaveTable.string( 'leave_end_date', 20 ).nullable();     
+        leaveTable.string( 'days', 20 ).nullable();     
         leaveTable.text( 'description' ).nullable();       
         leaveTable.text( 'admin_remark' ).nullable();   
 		leaveTable.enu('status', ['Accepted', 'Pending', 'Rejected']).defaultTo('Pending');    
