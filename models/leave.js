@@ -168,8 +168,11 @@ router.post("/myapplication/update", checkHeader, (req, res) => {
 });
 router.post("/status", (req, res) => {
   const { id, admin_remark, status } = req.body;
-  helper.updateStatus("leave_applications", id, admin_remark, status).then((data) => {
-    if (data === true) {
+  console.log({status})
+  console.log({admin_remark})
+  const updated_at = new Date().toLocaleString();
+  db('leave_applications').where('id', id).update( { admin_remark, status,  updated_at }).then((data) => {
+    if (data) {
       res.send({
         status: 200,
         message: "Application updated successfully",
