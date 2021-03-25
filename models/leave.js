@@ -1,8 +1,8 @@
 const express = require("express");
-const db = require("../config/knex"); 
+const db = require("../config/knex");
 const { checkHeader, validateName } = require("../middleware/valid");
 const router = express.Router();
-const getDaysDiff  = require('../lib/function');
+const {getDaysDiff} = require("../lib/function");
 
 /**
  * Leave types section
@@ -11,26 +11,27 @@ const getDaysDiff  = require('../lib/function');
 router.get("/", (req, res) => {
   try {
     const result = db("leaves")
-    .select()
-    .then((data) => {
-      res.send(data).status(200);
-    });
-    
+      .select()
+      .then((data) => {
+        res.send(data).status(200);
+      });
   } catch (error) {
-    console.log({error})
+    console.log({ error });
   }
 });
- 
-router.get("/:leave_type/exist", (req, res) => {  
-  const leave_type = req.params.leave_type ;
-  db("leaves").where({leave_type}).select().then((data) => {
-    if(data.length > 0) {  
-      res.send({exist: true}); 
-  } else {
-    res.send({exist: false}); 
-  }
-  }) 
- 
+
+router.get("/:leave_type/exist", (req, res) => {
+  const leave_type = req.params.leave_type;
+  db("leaves")
+    .where({ leave_type })
+    .select()
+    .then((data) => {
+      if (data.length > 0) {
+        res.send({ exist: true });
+      } else {
+        res.send({ exist: false });
+      }
+    });
 });
 router.post("/", checkHeader, (req, res, next) => {
   try {
@@ -57,17 +58,23 @@ router.post("/", checkHeader, (req, res, next) => {
   }
 });
 
- /**
-  * Leave applications down here
-  */
+/**
+ * Leave applications down here
+ */
 //get leave_applications details by id
 router.get("/application/:id", (req, res) => {
-  const id = req.params.id; 
+  const id = req.params.id;
   const result = db("leave_applications as a")
-  .where('a.id', id) 
+    .where("a.id", id)
     .join("leaves as l", "a.leave_type_id", "=", "l.id")
     .join("staffs as s", "a.staff_id", "=", "s.id")
-    .select("a.*", "l.leave_type", "l.allowed_days", "s.firstname", "s.lastname") 
+    .select(
+      "a.*",
+      "l.leave_type",
+      "l.allowed_days",
+      "s.firstname",
+      "s.lastname"
+    )
     .then((data) => {
       if (data) {
         res.send({
@@ -82,46 +89,88 @@ router.get("/application/:id", (req, res) => {
       }
     });
 });
- 
 
+router.get("/application/stats/:user/:leave", (req, res) => {
+  const user = req.params.user;
+  const leave = req.params.leave;
+  var d = new Date();
+  var n = d.getFullYear();
+  const result = db("leave_applications as a")
+    .where("a.staff_id", user)
+    .andWhere('a.leave_start_date', 'like', `%${n}%`)
+    .join("leaves as l", "a.leave_type_id", "=", "l.id")
+    .join("staffs as s", "a.staff_id", "=", "s.id")
+    .select(
+      "a.*",
+      "l.leave_type",
+      "l.allowed_days",
+      "s.firstname",
+      "s.lastname")
+    .then((data) => {
+      if (data) {
+        res.send({
+          status: 200,
+          data,
+        });
+      } else {
+        res.send({
+          status: 400,
+          message: "Wrong information provided",
+        });
+      }
+    });
+
+  // ('description', 'like', `%${term}%`)
+});
 //get all leave_applications
 router.get("/application/", (req, res) => {
   const result = db("leave_applications as a")
-  .join("leaves as l", "a.leave_type_id", "=", "l.id")
-  .join("staffs as s", "a.staff_id", "=", "s.id")
-  .select("a.*", "l.leave_type", "s.firstname", "s.lastname", "s.email") 
+    .join("leaves as l", "a.leave_type_id", "=", "l.id")
+    .join("staffs as s", "a.staff_id", "=", "s.id")
+    .select("a.*", "l.leave_type", "s.firstname", "s.lastname", "s.email")
     .then((data) => {
       res.send(data).status(200);
     });
 });
 
 //get all my app
-router.get("/myapplication/", checkHeader, (req, res) => { 
- try {
-  const staff_id = parseInt(req.user.id); 
-  db("leave_applications as a")
-    .where({staff_id}) 
-    .join("leaves as l", "a.leave_type_id", "=", "l.id")
-    .select("a.*", "l.leave_type") 
-    .then((data) => {
-      res.send(data).status(200);
-    });
-   
- } catch (error) {
-   console.log({error})
- }
+router.get("/myapplication/", checkHeader, (req, res) => {
+  try {
+    const staff_id = parseInt(req.user.id);
+    db("leave_applications as a")
+      .where({ staff_id })
+      .join("leaves as l", "a.leave_type_id", "=", "l.id")
+      .select("a.*", "l.leave_type")
+      .then((data) => {
+        res.send(data).status(200);
+      });
+  } catch (error) {
+    console.log({ error });
+  }
 });
 
 //create a new leave_applications
-router.post("/myapplication/", checkHeader, (req, res, next) => {
+router.post("/myapplication/", checkHeader, async (req, res, next) => {
   try {
-    const { leave_type_id, description, leave_start_date, leave_end_date } = req.body;
+    const {
+      leave_type_id,
+      description,
+      leave_start_date,
+      leave_end_date,
+    } = req.body;
     const created_at = new Date().toLocaleString();
     const staff_id = parseInt(req.user.id);
-    const days = getDaysDiff(leave_start_date, leave_end_date);
-    console.log({days})
+    const days = await getDaysDiff(leave_start_date, leave_end_date); 
     db("leave_applications")
-      .insert({ staff_id, leave_type_id, days, description, leave_start_date, leave_end_date, created_at })
+      .insert({
+        staff_id,
+        leave_type_id,
+        days,
+        description,
+        leave_start_date,
+        leave_end_date,
+        created_at,
+      })
       .then((result) => {
         if (result) {
           res.send({
@@ -170,21 +219,24 @@ router.post("/myapplication/update", checkHeader, (req, res) => {
   }
 });
 router.post("/status", (req, res) => {
-  const { id, admin_remark, status } = req.body; 
+  const { id, admin_remark, status } = req.body;
   const updated_at = new Date().toLocaleString();
-  db('leave_applications').where('id', id).update( { admin_remark, status,  updated_at }).then((data) => {
-    if (data) {
-      res.send({
-        status: 200,
-        message: "Application updated successfully",
-      });
-    } else {
-      res.send({
-        status: 400,
-        message: "Error updating application",
-      });
-    }
-  });
+  db("leave_applications")
+    .where("id", id)
+    .update({ admin_remark, status, updated_at })
+    .then((data) => {
+      if (data) {
+        res.send({
+          status: 200,
+          message: "Application updated successfully",
+        });
+      } else {
+        res.send({
+          status: 400,
+          message: "Error updating application",
+        });
+      }
+    });
 });
 router.delete("/myapplication/:id", checkHeader, (req, res) => {
   try {
