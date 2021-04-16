@@ -1,8 +1,7 @@
 const express = require("express");
 const db = require("../config/knex");
 const helper = require("../lib/helper");
-const router = express.Router();
-const mailer = require("../plugins/mailer");
+const router = express.Router(); 
 const { validate, checkHeader } = require("../middleware/valid");
 
 router.get("/:email/exist", (req, res) => {
@@ -23,7 +22,7 @@ router.get("/:email/exist", (req, res) => {
   }
 });
 //register user
-router.post("/", checkHeader, validate("staffs"), (req, res) => {
+router.post("/",   validate("staffs"), (req, res) => {
   try {
     const {
       email,

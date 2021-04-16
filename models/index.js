@@ -1,5 +1,6 @@
 const express = require("express");
 const routes = express.Router();
+
 const dashboard = require("./dashboard");
 const auth = require("./auth");
 const department = require("./department");
@@ -23,6 +24,7 @@ const sale = require("./sale");
 const ticket = require("./ticket");
 const report = require("./report");
 const conversation = require("./conversation");
+const test = require("./test");
 
 routes.use("/dashboard", dashboard);
 routes.use("/auth", auth);
@@ -47,5 +49,6 @@ routes.use("/leave", leave);
 routes.use("/report", report);
 routes.use("/conversation", conversation);
 routes.use("/onboarding", onboarding);
+routes.use("/test", test);
 
 module.exports = routes;

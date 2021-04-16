@@ -61,6 +61,10 @@ exports.up = function(knex) {
 		 staffsTable.text("marketing").nullable();
 		 staffsTable.text("management_executive").nullable();
 		 staffsTable.text("post_contract").nullable();
+		 staffsTable.text("sec_question_one").nullable();
+		 staffsTable.text("sec_answer_one").nullable();
+		 staffsTable.text("sec_question_two").nullable();
+		 staffsTable.text("sec_answer_two").nullable();
 		 staffsTable.foreign('branch_id').references('id').inTable('branches')
 		 .onDelete('CASCADE') .onUpdate('CASCADE');
 	 }) 

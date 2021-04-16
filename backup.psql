@@ -1,0 +1,618 @@
+CREATE SEQUENCE public.branches_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.assets_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.allocations_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.categories_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.company_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.conversations_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.customers_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.departments_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.directors_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.documents_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.leave_applications_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.leaves_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.logins_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.maintenance_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.marketing_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.orders_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.products_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.sales_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.staffs_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE public.stocks_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.subcategory_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.tickets_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+CREATE SEQUENCE public.tokens_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE TABLE public.branches
+(
+    id integer NOT NULL DEFAULT nextval('branches_id_seq'::regclass),
+    name character varying(30) COLLATE pg_catalog."default",
+    address text COLLATE pg_catalog."default",
+    email character varying(50) COLLATE pg_catalog."default",
+    phone character varying(50) COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT branches_pkey PRIMARY KEY (id),
+    CONSTRAINT branches_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text, 'Banned'::text]))
+);
+
+
+CREATE TABLE public.categories
+(
+    id integer NOT NULL DEFAULT nextval('categories_id_seq'::regclass),
+    name character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT categories_pkey PRIMARY KEY (id),
+    CONSTRAINT categories_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text, 'Banned'::text]))
+);
+
+
+CREATE TABLE public.company
+(
+    id integer NOT NULL DEFAULT nextval('company_id_seq'::regclass),
+    companyname character varying(100) COLLATE pg_catalog."default",
+    address text COLLATE pg_catalog."default",
+    email character varying(100) COLLATE pg_catalog."default",
+    phone character varying(50) COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    logo character varying(100) COLLATE pg_catalog."default",
+    appname character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT company_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE public.customers
+(
+    id integer NOT NULL DEFAULT nextval('customers_id_seq'::regclass),
+    fullname character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    phone character varying(15) COLLATE pg_catalog."default",
+    email character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    address text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT customers_pkey PRIMARY KEY (id),
+    CONSTRAINT customers_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Completed'::text, 'Deleted'::text]))
+);
+
+CREATE TABLE public.departments
+(
+    id integer NOT NULL DEFAULT nextval('departments_id_seq'::regclass),
+    name character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT departments_pkey PRIMARY KEY (id),
+    CONSTRAINT departments_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text, 'Banned'::text]))
+);
+
+CREATE TABLE public.directors
+(
+    id integer NOT NULL DEFAULT nextval('directors_id_seq'::regclass),
+    firstname character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    lastname character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    "position" character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    images text COLLATE pg_catalog."default",
+    date_joined character varying(50) COLLATE pg_catalog."default",
+    story text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT directors_pkey PRIMARY KEY (id),
+    CONSTRAINT directors_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+
+
+CREATE TABLE public.documents
+(
+    id integer NOT NULL DEFAULT nextval('documents_id_seq'::regclass),
+    title character varying(30) COLLATE pg_catalog."default",
+    doc_type character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT documents_pkey PRIMARY KEY (id),
+    CONSTRAINT documents_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+CREATE TABLE public.leaves
+(
+    id integer NOT NULL DEFAULT nextval('leaves_id_seq'::regclass),
+    leave_type character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    allowed_days character varying(100) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT leaves_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE public.staffs
+(
+    id integer NOT NULL DEFAULT nextval('staffs_id_seq'::regclass),
+    firstname character varying(100) COLLATE pg_catalog."default",
+    lastname character varying(100) COLLATE pg_catalog."default",
+    email character varying(100) COLLATE pg_catalog."default",
+    phone_number character varying(50) COLLATE pg_catalog."default",
+    branch_id integer,
+    acl text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    can_login text COLLATE pg_catalog."default" DEFAULT 'No'::text,
+    address character varying(200) COLLATE pg_catalog."default",
+    emergency_contact character varying(200) COLLATE pg_catalog."default",
+    emergency_phone character varying(30) COLLATE pg_catalog."default",
+    "staffId" character varying(50) COLLATE pg_catalog."default",
+    onboarded character varying(10) COLLATE pg_catalog."default" DEFAULT 'No'::character varying,
+    pre_contract text COLLATE pg_catalog."default",
+    general text COLLATE pg_catalog."default",
+    student text COLLATE pg_catalog."default",
+    para_professional text COLLATE pg_catalog."default",
+    professional character varying COLLATE pg_catalog."default",
+    marketing text COLLATE pg_catalog."default",
+    management_executive text COLLATE pg_catalog."default",
+    post_contract text COLLATE pg_catalog."default",
+    sec_question_one text COLLATE pg_catalog."default",
+    sec_answer_one text COLLATE pg_catalog."default",
+    sec_question_two text COLLATE pg_catalog."default",
+    sec_answer_two text COLLATE pg_catalog."default",
+    signature text COLLATE pg_catalog."default",
+    signed text COLLATE pg_catalog."default",
+    CONSTRAINT staffs_pkey PRIMARY KEY (id),
+    CONSTRAINT staffs_branch_id_foreign FOREIGN KEY (branch_id)
+        REFERENCES public.branches (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT staffs_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text])),
+    CONSTRAINT staffs_can_login_check CHECK (can_login = ANY (ARRAY['Yes'::text, 'No'::text]))
+);
+
+
+CREATE TABLE public.logins
+(
+    id integer NOT NULL DEFAULT nextval('logins_id_seq'::regclass),
+    staff_id integer,
+    email character varying(100) COLLATE pg_catalog."default",
+    password character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    token text COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    CONSTRAINT logins_pkey PRIMARY KEY (id),
+    CONSTRAINT logins_staff_id_foreign FOREIGN KEY (staff_id)
+        REFERENCES public.staffs (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT logins_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+
+
+CREATE TABLE public.subcategory
+(
+    id integer NOT NULL DEFAULT nextval('subcategory_id_seq'::regclass),
+    cat_id integer,
+    sub_name character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT subcategory_pkey PRIMARY KEY (id),
+    CONSTRAINT subcategory_cat_id_foreign FOREIGN KEY (cat_id)
+        REFERENCES public.categories (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT subcategory_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+
+CREATE TABLE public.assets
+(
+    id integer NOT NULL DEFAULT nextval('assets_id_seq'::regclass),
+    sub_id integer,
+    title character varying(30) COLLATE pg_catalog."default",
+    purchased_price real,
+    serial character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    condition text COLLATE pg_catalog."default" DEFAULT 'New'::text,
+    purchased_date character varying(50) COLLATE pg_catalog."default",
+    date_sold character varying(50) COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    company_name character varying(100) COLLATE pg_catalog."default",
+    start_date character varying(30) COLLATE pg_catalog."default",
+    end_date character varying(30) COLLATE pg_catalog."default",
+    CONSTRAINT assets_pkey PRIMARY KEY (id),
+    CONSTRAINT assets_sub_id_foreign FOREIGN KEY (sub_id)
+        REFERENCES public.subcategory (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT assets_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text, 'Maintenance'::text, 'Sold'::text])),
+    CONSTRAINT assets_condition_check CHECK (condition = ANY (ARRAY['New'::text, 'Leased'::text, 'Used'::text]))
+);
+
+
+CREATE TABLE public.products
+(
+    id integer NOT NULL DEFAULT nextval('products_id_seq'::regclass),
+    cat_id integer,
+    branch_id integer,
+    product_name character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    images text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT products_pkey PRIMARY KEY (id),
+    CONSTRAINT products_branch_id_foreign FOREIGN KEY (branch_id)
+        REFERENCES public.branches (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT products_cat_id_foreign FOREIGN KEY (cat_id)
+        REFERENCES public.categories (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT products_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+
+CREATE TABLE public.stocks
+(
+    id integer NOT NULL DEFAULT nextval('stocks_id_seq'::regclass),
+    product_id integer,
+    stock_name character varying(30) COLLATE pg_catalog."default",
+    quantity real NOT NULL,
+    price real NOT NULL,
+    expiry character varying(50) COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT stocks_pkey PRIMARY KEY (id),
+    CONSTRAINT stocks_product_id_foreign FOREIGN KEY (product_id)
+        REFERENCES public.products (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT stocks_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Pending'::text, 'Deleted'::text]))
+);
+
+CREATE TABLE public.tickets
+(
+    id integer NOT NULL DEFAULT nextval('tickets_id_seq'::regclass),
+    title character varying(30) COLLATE pg_catalog."default" NOT NULL,
+    description text COLLATE pg_catalog."default" NOT NULL,
+    email character varying(100) COLLATE pg_catalog."default",
+    staff_id integer,
+    assigned_to integer,
+    ticket_date character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    requester text COLLATE pg_catalog."default",
+    category text COLLATE pg_catalog."default",
+    priority text COLLATE pg_catalog."default" DEFAULT 'Low'::text,
+    status text COLLATE pg_catalog."default" DEFAULT 'Pending'::text,
+    CONSTRAINT tickets_pkey PRIMARY KEY (id),
+    CONSTRAINT tickets_staff_id_foreign FOREIGN KEY (staff_id)
+        REFERENCES public.staffs (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT tickets_requester_check CHECK (requester = ANY (ARRAY['Staff'::text, 'Customer'::text])),
+    CONSTRAINT tickets_category_check CHECK (category = ANY (ARRAY['Order'::text, 'Asset'::text])),
+    CONSTRAINT tickets_priority_check CHECK (priority = ANY (ARRAY['High'::text, 'Low'::text, 'Medium'::text])),
+    CONSTRAINT tickets_status_check CHECK (status = ANY (ARRAY['Pending'::text, 'Active'::text, 'InProgress'::text, 'Closed'::text]))
+);
+
+CREATE TABLE public.tokens
+(
+    id integer NOT NULL DEFAULT nextval('tokens_id_seq'::regclass),
+    staff_id integer,
+    token text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    expires character varying(50) COLLATE pg_catalog."default" DEFAULT '3600'::character varying,
+    CONSTRAINT tokens_pkey PRIMARY KEY (id),
+    CONSTRAINT tokens_staff_id_foreign FOREIGN KEY (staff_id)
+        REFERENCES public.staffs (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE public.sales
+(
+    id integer NOT NULL DEFAULT nextval('sales_id_seq'::regclass),
+    order_no character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    total real NOT NULL,
+    customer_id integer,
+    fullname character varying(30) COLLATE pg_catalog."default",
+    email character varying(20) COLLATE pg_catalog."default",
+    phone character varying(15) COLLATE pg_catalog."default",
+    sales_date character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    status text COLLATE pg_catalog."default" DEFAULT 'UNPAID'::text,
+    respondent text COLLATE pg_catalog."default" DEFAULT 'UNREGISTERED'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT sales_pkey PRIMARY KEY (id),
+    CONSTRAINT sales_customer_id_foreign FOREIGN KEY (customer_id)
+        REFERENCES public.customers (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT sales_respondent_check CHECK (respondent = ANY (ARRAY['REGISTERED'::text, 'UNREGISTERED'::text])),
+    CONSTRAINT sales_status_check CHECK (status = ANY (ARRAY['PAID'::text, 'UNPAID'::text, 'CANCELLED'::text]))
+);
+
+CREATE TABLE public.orders
+(
+    id integer NOT NULL DEFAULT nextval('orders_id_seq'::regclass),
+    stock_id integer,
+    order_no character varying(20) COLLATE pg_catalog."default" NOT NULL,
+    quantity real NOT NULL,
+    discount real,
+    item_price real NOT NULL,
+    sold_price real NOT NULL,
+    order_date character varying(15) COLLATE pg_catalog."default" NOT NULL,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT orders_pkey PRIMARY KEY (id),
+    CONSTRAINT orders_stock_id_foreign FOREIGN KEY (stock_id)
+        REFERENCES public.stocks (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+);
+
+CREATE TABLE public.marketing
+(
+    id integer NOT NULL DEFAULT nextval('marketing_id_seq'::regclass),
+    url_link character varying(100) COLLATE pg_catalog."default" NOT NULL,
+    description text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT marketing_pkey PRIMARY KEY (id)
+);
+
+
+CREATE TABLE public.maintenance
+(
+    id integer NOT NULL DEFAULT nextval('maintenance_id_seq'::regclass),
+    asset_id integer,
+    maintenance_date character varying(30) COLLATE pg_catalog."default",
+    cost character varying(30) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT maintenance_pkey PRIMARY KEY (id),
+    CONSTRAINT maintenance_asset_id_foreign FOREIGN KEY (asset_id)
+        REFERENCES public.assets (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT maintenance_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Completed'::text, 'Deleted'::text]))
+);
+
+CREATE TABLE public.conversations
+(
+    id integer NOT NULL DEFAULT nextval('conversations_id_seq'::regclass),
+    ticket_id integer,
+    description text COLLATE pg_catalog."default",
+    respondent text COLLATE pg_catalog."default",
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT conversations_pkey PRIMARY KEY (id),
+    CONSTRAINT conversations_ticket_id_foreign FOREIGN KEY (ticket_id)
+        REFERENCES public.tickets (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT conversations_respondent_check CHECK (respondent = ANY (ARRAY['Requester'::text, 'TaskPerson'::text]))
+);
+
+
+CREATE TABLE public.allocations
+(
+    id integer NOT NULL DEFAULT nextval('allocations_id_seq'::regclass),
+    asset_id integer,
+    staff_id integer,
+    dept_id integer,
+    quantity character varying(30) COLLATE pg_catalog."default",
+    note text COLLATE pg_catalog."default",
+    type text COLLATE pg_catalog."default" DEFAULT 'Individual'::text,
+    status text COLLATE pg_catalog."default" DEFAULT 'Active'::text,
+    created_at character varying(50) COLLATE pg_catalog."default",
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    CONSTRAINT allocations_pkey PRIMARY KEY (id),
+    CONSTRAINT allocations_asset_id_foreign FOREIGN KEY (asset_id)
+        REFERENCES public.assets (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT allocations_dept_id_foreign FOREIGN KEY (dept_id)
+        REFERENCES public.departments (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT allocations_staff_id_foreign FOREIGN KEY (staff_id)
+        REFERENCES public.staffs (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT allocations_type_check CHECK (type = ANY (ARRAY['Individual'::text, 'Departmental'::text, 'Others'::text])),
+    CONSTRAINT allocations_status_check CHECK (status = ANY (ARRAY['Active'::text, 'Returned'::text, 'Deleted'::text]))
+);
+
+
+CREATE TABLE public.leave_applications
+(
+    id integer NOT NULL DEFAULT nextval('leave_applications_id_seq'::regclass),
+    staff_id integer,
+    leave_type_id integer,
+    leave_start_date character varying(20) COLLATE pg_catalog."default",
+    leave_end_date character varying(20) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    admin_remark text COLLATE pg_catalog."default",
+    status text COLLATE pg_catalog."default" DEFAULT 'Pending'::text,
+    created_at character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    updated_at character varying(50) COLLATE pg_catalog."default",
+    days character varying(20) COLLATE pg_catalog."default",
+    CONSTRAINT leave_applications_pkey PRIMARY KEY (id),
+    CONSTRAINT leave_applications_leave_type_id_foreign FOREIGN KEY (leave_type_id)
+        REFERENCES public.leaves (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT leave_applications_staff_id_foreign FOREIGN KEY (staff_id)
+        REFERENCES public.staffs (id) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    CONSTRAINT leave_applications_status_check CHECK (status = ANY (ARRAY['Accepted'::text, 'Pending'::text, 'Rejected'::text]))
+);
+
+INSERT INTO "branches" (id, name, address, email, phone, created_at, updated_at) 
+VALUES
+(nextval('"branches_id_seq"'::regclass), 'Gold', 'Lagos ibadan express way', 'boladebode@yahoo.com',	'09066513311',	'2021-03-15 12:43:27 p.m', null)
+ 
+
+INSERT INTO "branches" (id, name, description, created_at, updated_at, status) 
+VALUES
+(nextval('"branches_id_seq"'::regclass), 'Gold', 'Lagos ibadan express way', 'boladebode@yahoo.com',	'09066513311',	'2021-03-15 12:43:27 p.m', null, 'Active')
+
+  
