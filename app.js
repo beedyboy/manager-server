@@ -17,7 +17,7 @@ const port = process.env.PORT || 8082;
 const log = require('./utils/logger');
 
 
-log.info('Starting Wig Tools API server...');
+log.info('Starting Inventory API server...');
 
 const origin = '*';
 app.use(
